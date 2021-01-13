@@ -1,0 +1,1 @@
+bubble_show = is_within_object(global.player);

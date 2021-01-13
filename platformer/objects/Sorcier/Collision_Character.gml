@@ -1,0 +1,1 @@
+collides_with_player = true;
