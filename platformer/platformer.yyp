@@ -101,6 +101,7 @@
     {"id":{"name":"Skeleton","path":"objects/Skeleton/Skeleton.yy",},"order":0,},
     {"id":{"name":"ecriture_de_steph","path":"fonts/ecriture_de_steph/ecriture_de_steph.yy",},"order":1,},
     {"id":{"name":"closed_gate_sprite","path":"sprites/closed_gate_sprite/closed_gate_sprite.yy",},"order":0,},
+    {"id":{"name":"city_tree_sprite","path":"sprites/city_tree_sprite/city_tree_sprite.yy",},"order":3,},
     {"id":{"name":"Character","path":"objects/Character/Character.yy",},"order":0,},
     {"id":{"name":"healthbar_background_sprite","path":"sprites/healthbar_background_sprite/healthbar_background_sprite.yy",},"order":0,},
     {"id":{"name":"LosingScreen","path":"rooms/LosingScreen/LosingScreen.yy",},"order":1,},
