@@ -21,7 +21,6 @@
   "physicsKinematic": false,
   "physicsShapePoints": [],
   "eventList": [
-    {"isDnD":false,"eventNum":0,"eventType":4,"collisionObjectId":{"name":"Character","path":"objects/Character/Character.yy",},"parent":{"name":"GeneralStore","path":"objects/GeneralStore/GeneralStore.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
     {"isDnD":false,"eventNum":0,"eventType":8,"collisionObjectId":null,"parent":{"name":"GeneralStore","path":"objects/GeneralStore/GeneralStore.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
     {"isDnD":false,"eventNum":0,"eventType":0,"collisionObjectId":null,"parent":{"name":"GeneralStore","path":"objects/GeneralStore/GeneralStore.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
   ],

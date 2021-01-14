@@ -24,6 +24,7 @@
             {"properties":[],"isDnd":false,"objectId":{"name":"GeneralStore","path":"objects/GeneralStore/GeneralStore.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":4377.5,"y":917.0,"resourceVersion":"1.0","name":"inst_5E819CAC","tags":[],"resourceType":"GMRInstance",},
             {"properties":[],"isDnd":false,"objectId":{"name":"Portail","path":"objects/Portail/Portail.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":32.0,"y":640.0,"resourceVersion":"1.0","name":"inst_5ABCFB60","tags":[],"resourceType":"GMRInstance",},
             {"properties":[],"isDnd":false,"objectId":{"name":"Sorcier","path":"objects/Sorcier/Sorcier.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":288.0,"y":672.0,"resourceVersion":"1.0","name":"inst_52AA3C5D","tags":[],"resourceType":"GMRInstance",},
+            {"properties":[],"isDnd":false,"objectId":{"name":"GeneralStoreDoor","path":"objects/GeneralStoreDoor/GeneralStoreDoor.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":4608.0,"y":672.0,"resourceVersion":"1.0","name":"inst_4DA2DEB8","tags":[],"resourceType":"GMRInstance",},
           ],"visible":true,"depth":300,"userdefinedDepth":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"gridX":32,"gridY":32,"layers":[],"hierarchyFrozen":false,"resourceVersion":"1.0","name":"town_front_instances","tags":[],"resourceType":"GMRInstanceLayer",},
         {"assets":[
             {"spriteId":{"name":"etagere_sprite","path":"sprites/etagere_sprite/etagere_sprite.yy",},"headPosition":0.0,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"animationSpeed":1.0,"colour":4294967295,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":5184.0,"y":512.0,"resourceVersion":"1.0","name":"graphic_1BAB8D04","tags":[],"resourceType":"GMRSpriteGraphic",},
@@ -104,6 +105,7 @@
     {"name":"inst_46FE11AB","path":"rooms/ville/ville.yy",},
     {"name":"inst_5ABCFB60","path":"rooms/ville/ville.yy",},
     {"name":"inst_52AA3C5D","path":"rooms/ville/ville.yy",},
+    {"name":"inst_4DA2DEB8","path":"rooms/ville/ville.yy",},
   ],
   "inheritCreationOrder": false,
   "sequenceId": null,

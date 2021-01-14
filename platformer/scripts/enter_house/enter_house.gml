@@ -1,27 +1,27 @@
-function enter_house() {
-    if !player_inside && keyboard_check_pressed(vk_up)
+function enter_house(house) {
+    if !house.player_inside && keyboard_check_pressed(vk_up)
     {
-       enter_house2();
+       enter_house2(house);
     }
     
-    if player_inside && keyboard_check_pressed(vk_down)
+    if house.player_inside && keyboard_check_pressed(vk_down)
     {
-        leave_house();
+        leave_house(house);
     }
 }
 
-function enter_house2()
+function enter_house2(house)
 {
-    player_inside = true;
-    player.house = self;
-    player.camera_locked = true;
+    house.player_inside = true;
+    house.player.house = house;
+    house.player.camera_locked = true;
         
-    camera_set_view_pos(camera, x - 300, 0)
+    camera_set_view_pos(house.camera, x - 300, 0)
 }
 
-function leave_house()
+function leave_house(house)
 {
-    player_inside = false;
-    player.house = noone;
-    player.camera_locked = false;
+    house.player_inside = false;
+    house.player.house = noone;
+    house.player.camera_locked = false;
 }
