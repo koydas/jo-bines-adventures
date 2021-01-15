@@ -70,8 +70,8 @@
     {"visible":true,"isLocked":false,"blendMode":0,"opacity":100.0,"displayName":"Layer 1","resourceVersion":"1.0","name":"b1398753-806a-40f9-8d45-0cb696aa9ab4","tags":[],"resourceType":"GMImageLayer",},
   ],
   "parent": {
-    "name": "Marchand",
-    "path": "folders/ville/Magasin Général/Marchand.yy",
+    "name": "sprites",
+    "path": "folders/ville/Magasin Général/sprites.yy",
   },
   "resourceVersion": "1.0",
   "name": "marchand_sprite",

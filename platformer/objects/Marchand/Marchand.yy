@@ -23,12 +23,15 @@
   "physicsStartAwake": true,
   "physicsKinematic": false,
   "physicsShapePoints": [],
-  "eventList": [],
+  "eventList": [
+    {"isDnD":false,"eventNum":0,"eventType":8,"collisionObjectId":null,"parent":{"name":"Marchand","path":"objects/Marchand/Marchand.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
+    {"isDnD":false,"eventNum":0,"eventType":3,"collisionObjectId":null,"parent":{"name":"Marchand","path":"objects/Marchand/Marchand.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
+  ],
   "properties": [],
   "overriddenProperties": [],
   "parent": {
-    "name": "Marchand",
-    "path": "folders/ville/Magasin Général/Marchand.yy",
+    "name": "Magasin Général",
+    "path": "folders/ville/Magasin Général.yy",
   },
   "resourceVersion": "1.0",
   "name": "Marchand",
