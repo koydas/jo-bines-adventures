@@ -45,6 +45,16 @@ export class TownScene extends WorldScene {
       this.add.image(x, 900 + GRASS_TILE_GROUND_OFFSET, "env-city-grass").setScale(GRASS_TILE_SCALE).setOrigin(0.5, 1).setDepth(-4);
     }
 
+    // A rock "pavé" (paved path) from the sorcerer to the general store's
+    // door, per feedback — dense/overlapping like the grass tiling above,
+    // rather than the sparse one-off rocks in decorSpots below.
+    const rockTile = this.textures.get("env-city-rocks").getSourceImage() as HTMLImageElement;
+    const rockScale = 0.3;
+    const rockStep = rockTile.width * rockScale * 0.5;
+    for (let x = VILLE_ROOM.sorcier.x; x <= VILLE_ROOM.generalStoreDoor.x; x += rockStep) {
+      this.add.image(x, 900, "env-city-rocks").setScale(rockScale).setOrigin(0.5, 1).setDepth(-3);
+    }
+
     // Scattered decoration (rocks / trees), thinned out from the original room data.
     const decorSpots = [280, 970, 2080, 2470, 3230, 3700, 4230, 4990, 5620, 6220];
     decorSpots.forEach((x, i) => {

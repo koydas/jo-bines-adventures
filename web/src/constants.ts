@@ -79,7 +79,7 @@ export const PLAYER_GROUND_OFFSET = 171;
 // padding in pixels, so the offset needs to double too (240px) to keep the
 // same relative grounding.
 export const GRASS_TILE_SCALE = 1.1;
-export const GRASS_TILE_GROUND_OFFSET = 230; // raised ~10px on top of the 240 above
+export const GRASS_TILE_GROUND_OFFSET = 210; // raised another 20px (2x the previous +10px nudge) on top of the 240 above
 // Density: tiles are placed every tileWidth * this factor instead of every
 // full tileWidth, so consecutive images overlap and the ground reads as
 // fuller/denser instead of one sparse strip repeat — requested as "plus de gazon".
