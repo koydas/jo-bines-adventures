@@ -40,7 +40,14 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
   }
 
   get isAttacking() {
-    return this.action === "attack";
+    // Must also check isDead: a punch that kills this skeleton while its
+    // action is still "attack" (takeDamage() disables the body but doesn't
+    // touch action) would otherwise still read as attacking for the rest
+    // of this same GraveyardScene.update() tick — overlapping() only
+    // looks at sprite bounds, which stay valid until the death tween's
+    // destroy() runs a beat later, so a defeated skeleton could land one
+    // last hit on the player that killed it.
+    return this.action === "attack" && !this.isDead;
   }
 
   get isDead() {
