@@ -39,12 +39,13 @@ export class GraveyardScene extends WorldScene {
     const tileWidth = grassTile.width * GRASS_TILE_SCALE;
     const step = tileWidth * GRASS_TILE_DENSITY;
     for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += step) {
+      // Depth -2: above the rocks/trees below (-3) — "par dessus les arbres" (see TownScene's identical fix).
       this.add
         .image(x, 880 + GRASS_TILE_GROUND_OFFSET, "env-city-grass")
         .setScale(GRASS_TILE_SCALE)
         .setOrigin(0.5, 1)
         .setTint(0x8f9bc9)
-        .setDepth(-4);
+        .setDepth(-2);
     }
 
     const decorSpots = [700, 1600, 2500, 4000, 5200, 6300, 7400, 8500, 9600, 10500, 11400];

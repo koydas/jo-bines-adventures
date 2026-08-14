@@ -6,6 +6,7 @@ import { Potion } from "../entities/Potion";
 import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
 import {
+  GAME_HEIGHT,
   GRASS_TILE_DENSITY,
   GRASS_TILE_GROUND_OFFSET,
   GRASS_TILE_SCALE,
@@ -42,17 +43,19 @@ export class TownScene extends WorldScene {
     const tileWidth = grassTile.width * GRASS_TILE_SCALE;
     const step = tileWidth * GRASS_TILE_DENSITY;
     for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += step) {
-      this.add.image(x, 900 + GRASS_TILE_GROUND_OFFSET, "env-city-grass").setScale(GRASS_TILE_SCALE).setOrigin(0.5, 1).setDepth(-4);
+      // Depth -2: above the rocks/trees below (-3) — "par dessus les arbres".
+      this.add.image(x, 900 + GRASS_TILE_GROUND_OFFSET, "env-city-grass").setScale(GRASS_TILE_SCALE).setOrigin(0.5, 1).setDepth(-2);
     }
 
     // A rock "pavé" (paved path) from the sorcerer to the general store's
     // door, per feedback — dense/overlapping like the grass tiling above,
-    // rather than the sparse one-off rocks in decorSpots below.
+    // rather than the sparse one-off rocks in decorSpots below. Anchored at
+    // GAME_HEIGHT so it sits right at the very bottom of the screen.
     const rockTile = this.textures.get("env-city-rocks").getSourceImage() as HTMLImageElement;
     const rockScale = 0.3;
     const rockStep = rockTile.width * rockScale * 0.5;
     for (let x = VILLE_ROOM.sorcier.x; x <= VILLE_ROOM.generalStoreDoor.x; x += rockStep) {
-      this.add.image(x, 900, "env-city-rocks").setScale(rockScale).setOrigin(0.5, 1).setDepth(-3);
+      this.add.image(x, GAME_HEIGHT, "env-city-rocks").setScale(rockScale).setOrigin(0.5, 1).setDepth(-3);
     }
 
     // Scattered decoration (rocks / trees), thinned out from the original room data.
