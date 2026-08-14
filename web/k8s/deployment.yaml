@@ -25,7 +25,7 @@ spec:
         - name: web
           # Tag is rewritten to the built commit SHA by the docker-publish
           # workflow on every push to master; see .github/workflows/docker-publish.yml.
-          image: ghcr.io/koydas/jo-bines-adventures:49e3f6c
+          image: ghcr.io/koydas/jo-bines-adventures:df8b6e4
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
