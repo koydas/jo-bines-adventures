@@ -3,5 +3,9 @@ dist
 .git
 *.md
 scripts
-smoketest*.mjs
-mobiletest*.mjs
+tests
+playwright.config.ts
+test-results
+playwright-report
+docs
+.claude

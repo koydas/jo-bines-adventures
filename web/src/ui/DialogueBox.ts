@@ -67,6 +67,13 @@ export class DialogueBox {
     this.container.add([this.bg, this.speakerText, this.bodyText, this.hintText]);
   }
 
+  /** Read-only snapshot of what's currently on screen — used by the smoke
+   * tests (tests/smoke.spec.ts) to assert on dialogue content, since it's
+   * drawn to canvas and isn't otherwise inspectable from the DOM. */
+  currentPage(): DialoguePage | null {
+    return this.visible ? this.pages[this.pageIndex] : null;
+  }
+
   private clearChoices() {
     this.choiceTexts.forEach((t) => t.destroy());
     this.choiceTexts = [];
