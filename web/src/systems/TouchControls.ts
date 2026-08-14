@@ -14,6 +14,13 @@ import { touchState } from "./touchState";
 export class TouchControls {
   private root: HTMLDivElement;
   private contextButton: HTMLButtonElement;
+  private touchCapable: boolean;
+  // Hidden by default: MainMenu/GameOver read input straight off the
+  // Phaser canvas (pointerdown/keydown), not touchState, so a visible,
+  // seemingly-functional overlay there would invite taps that silently do
+  // nothing (or queue an action that only fires once a world scene starts
+  // reading touchState again). Playable scenes opt in via setSceneActive.
+  private sceneActive = false;
 
   constructor() {
     this.root = document.createElement("div");
@@ -41,14 +48,23 @@ export class TouchControls {
     this.bindTap(".tc-item", () => (touchState.itemQueued = true));
     this.bindTap(".tc-context", () => (touchState.upQueued = true));
 
-    if (!this.isTouchDevice()) {
-      this.root.style.display = "none";
-    }
+    this.touchCapable = this.isTouchDevice();
+    this.updateVisibility();
   }
 
   /** Show/hide the contextual "enter" button (portal, door, ...). */
   setContextVisible(visible: boolean) {
     this.contextButton.style.display = visible ? "flex" : "none";
+  }
+
+  /** Playable (WorldScene) scenes show the overlay; menus/game-over hide it — see the constructor comment. */
+  setSceneActive(active: boolean) {
+    this.sceneActive = active;
+    this.updateVisibility();
+  }
+
+  private updateVisibility() {
+    this.root.style.display = this.touchCapable && this.sceneActive ? "" : "none";
   }
 
   destroy() {

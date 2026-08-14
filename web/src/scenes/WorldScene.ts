@@ -50,6 +50,7 @@ export abstract class WorldScene extends Phaser.Scene {
     this.hud = new Hud(this, this.player);
     this.dialogue = new DialogueBox(this);
     this.inputManager = new InputManager(this);
+    getTouchControls()?.setSceneActive(true);
 
     this.buildRoom();
 

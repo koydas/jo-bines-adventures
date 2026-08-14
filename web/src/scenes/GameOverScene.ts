@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { GAME_OVER_LINES } from "../constants";
 import { GameState } from "../state/GameState";
+import { getTouchControls } from "../systems/touchControlsInstance";
 
 /** Ports objects/GameOver / rooms/LosingScreen. */
 export class GameOverScene extends Phaser.Scene {
@@ -11,6 +12,9 @@ export class GameOverScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
     this.cameras.main.setBackgroundColor("#1a0a0a");
+    // See the comment on TouchControls.setSceneActive — this scene reads
+    // input straight off the Phaser canvas, not touchState.
+    getTouchControls()?.setSceneActive(false);
 
     this.add
       .text(width / 2, height * 0.4, GAME_OVER_LINES[0], {

@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { INSTRUCTIONS_LINES } from "../constants";
 import { GameState } from "../state/GameState";
+import { getTouchControls } from "../systems/touchControlsInstance";
 
 /** Ports rooms/MainMenu + objects/Instructions. */
 export class MainMenuScene extends Phaser.Scene {
@@ -11,6 +12,10 @@ export class MainMenuScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
     this.cameras.main.setBackgroundColor("#1b1425");
+    // This scene reads input straight off the Phaser canvas
+    // (pointerdown/keydown below), not touchState — see the comment on
+    // TouchControls.setSceneActive.
+    getTouchControls()?.setSceneActive(false);
 
     this.add
       .text(width / 2, height * 0.22, "Les Aventures de\nJo Bine", {

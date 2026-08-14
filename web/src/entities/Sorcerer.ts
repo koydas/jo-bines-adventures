@@ -29,8 +29,12 @@ export class Sorcerer extends NPC {
   }
 
   talk(): DialoguePage[] | null {
-    if (this.isPortalOpen()) return null;
-
+    // Checked before isPortalOpen(): accepting starts the ~500ms portal
+    // opening animation and queues this confirmation line in the same
+    // step (see onDialogueClosed), so by the time the player can talk
+    // again the portal may already be fully open. A pending reply must
+    // always get its turn, or it's lost — "portal's open, nothing left to
+    // say" only applies once there's no reply left pending.
     if (this.pendingInsult) {
       this.pendingInsult = false;
       return [{ speaker: this.speakerName, lines: [QUEST_TEXT.insult] }];
@@ -40,6 +44,8 @@ export class Sorcerer extends NPC {
       this.pendingAcceptMessage = false;
       return [{ speaker: this.speakerName, lines: [QUEST_TEXT.npcReplies[0]] }];
     }
+
+    if (this.isPortalOpen()) return null;
 
     return [
       { speaker: this.speakerName, lines: [QUEST_TEXT.salutation, ...QUEST_TEXT.intro] },
