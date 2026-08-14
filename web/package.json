@@ -1,0 +1,25 @@
+{
+  "name": "jo-bine-adventures",
+  "private": true,
+  "version": "0.4.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "pretest": "vite build",
+    "test": "playwright test",
+    "pretest:smoke": "vite build",
+    "test:smoke": "playwright test tests/smoke.spec.ts",
+    "pretest:e2e": "vite build",
+    "test:e2e": "playwright test tests/controls.spec.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  }
+}

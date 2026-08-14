@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+*.md
+scripts
+tests
+playwright.config.ts
+test-results
+playwright-report
+docs
+.claude

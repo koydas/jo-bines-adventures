@@ -1,0 +1,47 @@
+name: Smoke Tests
+
+on:
+  push:
+    branches: [master, main]
+    paths: ["web/**", ".github/workflows/smoke-tests.yml"]
+  pull_request:
+    paths: ["web/**", ".github/workflows/smoke-tests.yml"]
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  smoke:
+    name: Build & smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Type-check & build
+        run: npm run build
+
+      - name: Run smoke tests
+        run: npx playwright test tests/smoke.spec.ts
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-smoke
+          path: web/playwright-report/
+          retention-days: 14

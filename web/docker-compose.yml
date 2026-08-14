@@ -1,0 +1,11 @@
+services:
+  jo-bine-adventures:
+    build: .
+    image: jo-bine-adventures:latest
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    # If you already run a reverse proxy (Caddy/Traefik/nginx) with HTTPS on
+    # your server, point it at this container's port 8080 instead of
+    # publishing it directly. HTTPS is required for "Add to Home Screen" /
+    # PWA install to work well on iPhone.
