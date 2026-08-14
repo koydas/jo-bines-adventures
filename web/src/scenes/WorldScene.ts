@@ -86,26 +86,60 @@ export abstract class WorldScene extends Phaser.Scene {
     this.hud.update();
   }
 
+  /**
+   * Picks the *nearest* overlapping interaction rather than always
+   * preferring NPCs: with the padded overlap zone (see `overlapping()`),
+   * a player near the Potion stand can also be within range of a nearby
+   * NPC (e.g. the Merchant, `VILLE_ROOM.marchand` vs `.potion`), and a
+   * fixed NPCs-first order would swallow the buy action even when the
+   * potion is clearly what the player walked up to. Each candidate's
+   * trigger runs in distance order and only "claims" the button press if
+   * it actually did something — an NPC with nothing to say (`talk()`
+   * returning null) falls through to the next-nearest candidate instead
+   * of eating the press.
+   */
   private handleAction(now: number) {
-    const npc = this.npcs.find((n) => this.overlapping(n));
-    if (npc) {
-      const pages = npc.talk();
-      if (pages) {
-        this.dialogue.show(pages, (choice) => npc.onDialogueClosed(choice));
-        return;
-      }
+    type Candidate = { distance: number; trigger: () => boolean };
+    const candidates: Candidate[] = [];
+
+    for (const npc of this.npcs) {
+      if (!this.overlapping(npc)) continue;
+      candidates.push({
+        distance: this.distanceTo(npc),
+        trigger: () => {
+          const pages = npc.talk();
+          if (!pages) return false;
+          this.dialogue.show(pages, (choice) => npc.onDialogueClosed(choice));
+          return true;
+        },
+      });
     }
 
     if (this.potion && this.overlapping(this.potion)) {
-      if (this.player.buy(this.potion.price)) {
-        this.flashMessage("Potion achetée !");
-      } else {
-        this.flashMessage("Pas assez d'argent...");
-      }
-      return;
+      const potion = this.potion;
+      candidates.push({
+        distance: this.distanceTo(potion),
+        trigger: () => {
+          if (this.player.buy(potion.price)) {
+            this.flashMessage("Potion achetée !");
+          } else {
+            this.flashMessage("Pas assez d'argent...");
+          }
+          return true;
+        },
+      });
+    }
+
+    candidates.sort((a, b) => a.distance - b.distance);
+    for (const candidate of candidates) {
+      if (candidate.trigger()) return;
     }
 
     this.player.punch(now);
+  }
+
+  private distanceTo(target: Phaser.GameObjects.Sprite): number {
+    return Math.abs(target.x - this.player.x);
   }
 
   private handleUp() {

@@ -80,12 +80,13 @@ test.describe("shop", () => {
     await page.evaluate(() => {
       const scene = window.__game.scene.keys.Town;
       scene.player.money = 10; // earning it via combat is covered by the graveyard tests below
-      // Just past the potion stand (5440) rather than exactly on it: the
-      // Merchant sits at 5216, and overlapping()'s +60px mobile-friendly
-      // padding means standing exactly at 5440 also (barely) overlaps the
-      // Merchant's hitbox — the action button prioritizes NPCs, so that
-      // would talk instead of buy. 5500 is unambiguously shop-only.
-      scene.player.x = 5500;
+      // Standing exactly on the potion stand (5440): overlapping()'s +60px
+      // mobile-friendly padding means the Merchant's hitbox (5216) is also
+      // technically in range from here, but WorldScene.handleAction() picks
+      // the *nearest* overlapping interaction, and nothing is nearer than
+      // standing right on top of it — this exercises that disambiguation
+      // directly instead of dodging it with a position further away.
+      scene.player.x = 5440;
     });
     await tapKey(page, "Control");
 

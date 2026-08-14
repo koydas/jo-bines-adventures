@@ -91,11 +91,12 @@ test.describe("movement — touch controls", () => {
 });
 
 test.describe("buying a potion", () => {
-  // A safe spot right next to the potion stand (5440) that doesn't also
-  // overlap the Merchant (5216) — see the comment in tests/smoke.spec.ts's
-  // equivalent seed position for why that matters (the action button
-  // prioritizes talking to an NPC over buying).
-  const NEAR_POTION_X = 5500;
+  // The potion stand's own position (5440) — see the comment in
+  // tests/smoke.spec.ts's equivalent seed position for why walking all the
+  // way onto it (rather than stopping short to dodge the Merchant's
+  // overlapping hitbox) is deliberate: WorldScene.handleAction() resolves
+  // overlapping interactions by nearest, so this exercises that directly.
+  const NEAR_POTION_X = 5440;
 
   test("walking to the stand and pressing the action button buys a potion", async ({ page }) => {
     await startGame(page);
@@ -133,7 +134,7 @@ test.describe("buying a potion", () => {
 
 test.describe("buying a potion — touch controls", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
-  const NEAR_POTION_X = 5500;
+  const NEAR_POTION_X = 5440;
 
   test("walking to the stand with the D-pad and buying with the touch action button", async ({ page }) => {
     await startGame(page);

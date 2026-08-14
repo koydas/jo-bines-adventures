@@ -59,7 +59,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   private move(direction: 1 | -1) {
-    if (this.action === "attack" || this.isDead) return;
+    // "hit" must block movement too, same as "attack": without it, holding
+    // a direction key through a hit-stun lets the very next WorldScene
+    // update() call moveLeft()/moveRight(), which overwrites the fresh
+    // "hit" action (and its char-hit animation, set in takeDamage()) with
+    // "run" almost immediately.
+    if (this.action === "attack" || this.action === "hit" || this.isDead) return;
 
     this.facing = direction;
     this.setFlipX(direction < 0);

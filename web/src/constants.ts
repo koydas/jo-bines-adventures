@@ -127,6 +127,6 @@ export const GAME_OVER_LINES = ["Vous avez perdu", "Appuyez pour réessayer"];
 export const INSTRUCTIONS_LINES = [
   "Pour attaquer ou parler, touche le bouton d'action",
   "Pour boire une potion, touche le bouton potion",
-  "Pour entrer dans un portail ou une porte, avance dedans",
+  "Pour entrer dans un portail ou une porte, approche-toi et appuie sur Haut",
   "Quand tu es prêt, touche l'écran pour commencer",
 ];
