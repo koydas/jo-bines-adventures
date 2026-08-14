@@ -86,7 +86,14 @@ export const ROOM_KEYS = {
 export const VILLE_ROOM = {
   width: 7000,
   height: 1080,
-  portal: { x: 32, y: 640 },
+  // portal_sprite.yy (and opening_portal_sprite.yy) both have "origin": 0
+  // (top-left, xorigin/yorigin 0,0) — same legacy convention as sorcier
+  // above — width 247, height 415. Portal.ts draws with setOrigin(0.5, 1)
+  // (bottom-center), so the raw legacy y (640) put it ~415px too high:
+  // invisible while closed, so unnoticed until the opening animation
+  // revealed it floating in the sky right after talking to the sorcerer.
+  // Converted the same way: x' = x + width/2 = 32+123.5, y' = y + height = 640+415.
+  portal: { x: 155.5, y: 1055 },
   // sprites/sorcier_sprite.yy has "origin": 0 (top-left, xorigin/yorigin 0,0)
   // unlike every other NPC sprite (marchand/guard/trainer all use a custom
   // near-bottom origin), so the room's raw x/y (288, 672) is the sprite's

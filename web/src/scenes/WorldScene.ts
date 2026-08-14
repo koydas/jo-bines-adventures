@@ -71,8 +71,13 @@ export abstract class WorldScene extends Phaser.Scene {
     const state = this.inputManager.read();
 
     if (this.dialogue.visible) {
-      if (state.left) this.dialogue.moveChoice(-1);
-      if (state.right) this.dialogue.moveChoice(1);
+      // Edge-triggered (leftPressed/rightPressed), not the continuous
+      // left/right used for movement below: a quick D-pad tap's
+      // touchstart+touchend can both land within a single frame gap, which
+      // the continuous booleans can miss seeing entirely — see
+      // touchState.leftQueued/rightQueued.
+      if (state.leftPressed) this.dialogue.moveChoice(-1);
+      if (state.rightPressed) this.dialogue.moveChoice(1);
       if (state.actionPressed) this.dialogue.confirm();
       this.player.stopHorizontal();
       return;

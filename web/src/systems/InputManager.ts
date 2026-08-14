@@ -15,6 +15,8 @@ export interface InputState {
   left: boolean;
   right: boolean;
   /** Edge-triggered: true for exactly one read after the press. */
+  leftPressed: boolean;
+  rightPressed: boolean;
   actionPressed: boolean;
   itemPressed: boolean;
   upPressed: boolean;
@@ -56,6 +58,8 @@ export class InputManager {
   private wasPadAction: boolean;
   private wasPadItem: boolean;
   private wasPadUp: boolean;
+  private wasPadLeft: boolean;
+  private wasPadRight: boolean;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -75,6 +79,8 @@ export class InputManager {
     this.wasPadAction = initialPad.action;
     this.wasPadItem = initialPad.item;
     this.wasPadUp = initialPad.up;
+    this.wasPadLeft = initialPad.left;
+    this.wasPadRight = initialPad.right;
   }
 
   private gamepad(): Phaser.Input.Gamepad.Gamepad | null {
@@ -104,9 +110,13 @@ export class InputManager {
     const padActionPressed = pad.action && !this.wasPadAction;
     const padItemPressed = pad.item && !this.wasPadItem;
     const padUpPressed = pad.up && !this.wasPadUp;
+    const padLeftPressed = pad.left && !this.wasPadLeft;
+    const padRightPressed = pad.right && !this.wasPadRight;
     this.wasPadAction = pad.action;
     this.wasPadItem = pad.item;
     this.wasPadUp = pad.up;
+    this.wasPadLeft = pad.left;
+    this.wasPadRight = pad.right;
 
     const actionPressed =
       (!!this.keyCtrl && Phaser.Input.Keyboard.JustDown(this.keyCtrl)) ||
@@ -123,10 +133,26 @@ export class InputManager {
       padUpPressed ||
       this.consume("upQueued");
 
-    return { left, right, actionPressed, itemPressed, upPressed };
+    // left/right above are level-triggered (continuous, for movement).
+    // Dialogue choice-cycling wants a single step per press instead — see
+    // touchState.leftQueued/rightQueued for why that can't just be "left
+    // was true on this read and wasn't on the last one" for touch input.
+    const leftPressed =
+      (!!this.cursors?.left && Phaser.Input.Keyboard.JustDown(this.cursors.left)) ||
+      (!!this.keyA && Phaser.Input.Keyboard.JustDown(this.keyA)) ||
+      padLeftPressed ||
+      this.consume("leftQueued");
+
+    const rightPressed =
+      (!!this.cursors?.right && Phaser.Input.Keyboard.JustDown(this.cursors.right)) ||
+      (!!this.keyD && Phaser.Input.Keyboard.JustDown(this.keyD)) ||
+      padRightPressed ||
+      this.consume("rightQueued");
+
+    return { left, right, leftPressed, rightPressed, actionPressed, itemPressed, upPressed };
   }
 
-  private consume(flag: "actionQueued" | "itemQueued" | "upQueued"): boolean {
+  private consume(flag: "actionQueued" | "itemQueued" | "upQueued" | "leftQueued" | "rightQueued"): boolean {
     const value = touchState[flag];
     touchState[flag] = false;
     return value;

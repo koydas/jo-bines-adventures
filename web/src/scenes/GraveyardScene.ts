@@ -57,8 +57,9 @@ export class GraveyardScene extends WorldScene {
       (s) => new Skeleton(this, s.x, s.y, s.flip, this.player, (dead) => this.removeSkeleton(dead)),
     );
 
-    // Portal back to town.
-    this.portal = new Portal(this, PORTAL.graveyardX, 640);
+    // Portal back to town. y matches VILLE_ROOM.portal's — same sprite, same
+    // top-left-origin correction (see the comment there).
+    this.portal = new Portal(this, PORTAL.graveyardX, 1055);
     this.onPortalEnter = () => {
       GameState.enteredViaPortal = true;
       this.scene.start("Town");

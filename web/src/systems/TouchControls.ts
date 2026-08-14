@@ -42,8 +42,8 @@ export class TouchControls {
     this.contextButton = this.root.querySelector(".tc-context")!;
     this.contextButton.style.display = "none";
 
-    this.bindHold(".tc-left", (down) => (touchState.left = down));
-    this.bindHold(".tc-right", (down) => (touchState.right = down));
+    this.bindHold(".tc-left", (down) => (touchState.left = down), "leftQueued");
+    this.bindHold(".tc-right", (down) => (touchState.right = down), "rightQueued");
     this.bindTap(".tc-action", () => (touchState.actionQueued = true));
     this.bindTap(".tc-item", () => (touchState.itemQueued = true));
     this.bindTap(".tc-context", () => (touchState.upQueued = true));
@@ -75,11 +75,12 @@ export class TouchControls {
     return "ontouchstart" in window || navigator.maxTouchPoints > 0;
   }
 
-  private bindHold(selector: string, setDown: (down: boolean) => void) {
+  private bindHold(selector: string, setDown: (down: boolean) => void, queueFlag?: "leftQueued" | "rightQueued") {
     const el = this.root.querySelector<HTMLElement>(selector)!;
     const start = (e: Event) => {
       e.preventDefault();
       setDown(true);
+      if (queueFlag) touchState[queueFlag] = true;
       el.classList.add("active");
     };
     const end = (e: Event) => {
