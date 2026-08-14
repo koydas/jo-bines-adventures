@@ -1,3 +1,4 @@
+import type Phaser from "phaser";
 import { WorldScene } from "./WorldScene";
 import { Merchant } from "../entities/Merchant";
 import { Sorcerer } from "../entities/Sorcerer";
@@ -9,6 +10,8 @@ import { VILLE_ROOM } from "../constants";
 /** Ports rooms/ville (town square, general store, portal to the graveyard). */
 export class TownScene extends WorldScene {
   protected roomWidth = VILLE_ROOM.width;
+  private shopFront!: Phaser.GameObjects.Image;
+  private shopOpen = false;
 
   constructor() {
     super("Town");
@@ -45,7 +48,29 @@ export class TownScene extends WorldScene {
     this.add.image(VILLE_ROOM.magasinMur.x, 900, "env-magasin-mur").setScale(0.32).setOrigin(0.5, 1).setDepth(-6);
     this.add.image(VILLE_ROOM.bureau.x, 900, "env-bureau").setScale(0.35).setOrigin(0.5, 1).setDepth(-1);
     VILLE_ROOM.etageres.forEach((e) => this.add.image(e.x, 900, "env-etagere").setScale(0.3).setOrigin(0.5, 1).setDepth(-1));
-    this.add.image(VILLE_ROOM.generalStoreDoor.x, 900, "env-magasin-porte").setScale(0.5).setOrigin(0.5, 1).setDepth(-1);
+
+    // Storefront: ports objects/GeneralStore + GeneralStoreDoor +
+    // enter_house.gml. In the legacy game this opaque facade (depth 300)
+    // draws in FRONT of the counter/shelves/merchant (depth 400-500),
+    // hiding them from outside; walking up to the door and pressing Up
+    // toggles player_inside, which fades the facade to alpha 0.1 to reveal
+    // the interior. That whole object/interaction was missing from the
+    // port, so the counter/shelves/merchant just sat in the open street.
+    // Sized explicitly (not scaled from the source PNG) to span the known
+    // interior cluster (door 4608 .. potion 5440) rather than guess at the
+    // legacy room's implicit camera scale.
+    this.shopFront = this.add
+      .image(5040, 920, "env-magasin")
+      .setOrigin(0.5, 1)
+      .setDisplaySize(1250, 1250 * (1743 / 2577))
+      .setDepth(1);
+
+    const shopDoor = this.add
+      .sprite(VILLE_ROOM.generalStoreDoor.x, 900, "env-magasin-porte")
+      .setScale(0.5)
+      .setOrigin(0.5, 1)
+      .setDepth(2);
+    this.upInteractables.push({ target: shopDoor, action: () => this.toggleShop() });
 
     // NPCs.
     const merchant = new Merchant(this, VILLE_ROOM.marchand.x, VILLE_ROOM.marchand.y);
@@ -74,5 +99,11 @@ export class TownScene extends WorldScene {
   update(time: number, delta: number) {
     super.update(time, delta);
     this.portal?.update();
+  }
+
+  /** enter_house.gml's alpha toggle (1 outside, 0.1 once inside) — approach the door and press Up to open/close. */
+  private toggleShop() {
+    this.shopOpen = !this.shopOpen;
+    this.shopFront.setAlpha(this.shopOpen ? 0.1 : 1);
   }
 }

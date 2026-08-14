@@ -20,8 +20,17 @@ export class Hud {
 
     this.container = scene.add.container(0, 0).setScrollFactor(0).setDepth(900);
 
+    // ui-healthbar-bg (1352x351) and ui-healthbar-fill (1100x150) are two
+    // separately-exported frames whose actual bar art sits at different
+    // offsets within each canvas (bg's visible frame starts at local
+    // (151,117), fill's visible bar starts at (17,21)). The old fixed
+    // (35,33) fill position didn't account for that gap and drew the fill
+    // ~24px left / ~18px above where the bg's window actually is. Fixed by
+    // aligning both frames' visible-content top-left corners:
+    //   fillPos = bgPos + (bgContentTopLeft - fillContentTopLeft) * scale
+    //           = (30,30) + (151-17, 117-21) * 0.22 = (59, 51)
     this.healthBg = scene.add.image(30, 30, "ui-healthbar-bg").setOrigin(0, 0).setScale(0.22);
-    this.healthFill = scene.add.image(35, 33, "ui-healthbar-fill").setOrigin(0, 0).setScale(0.22);
+    this.healthFill = scene.add.image(59, 51, "ui-healthbar-fill").setOrigin(0, 0).setScale(0.22);
 
     const textStyle: Phaser.Types.GameObjects.Text.TextStyle = {
       fontFamily: "system-ui, sans-serif",

@@ -51,6 +51,22 @@ export const COOLDOWNS = {
   hitStunMs: 250,
 };
 
+// How many px above its own canvas's bottom edge each character animation's
+// real feet sit — sprites/character_*_sprite.yy custom yorigin, converted as
+// (height - yorigin): idle=427-256, run=299-172, punch=350-225, hit=250-115.
+// Player draws with setOrigin(0.5, 1) (anchors the *canvas* bottom edge, not
+// the feet, at y), so without this the character floats above groundY by
+// that many px in every state. idle's offset (171) is far bigger than the
+// others (125-135), which is why idle specifically looked broken: switching
+// out of idle into run/attack/hit already looked roughly grounded, so only
+// idle stood out as floating.
+export const PLAYER_GROUND_OFFSET = {
+  idle: 171,
+  run: 127,
+  attack: 125,
+  hit: 135,
+};
+
 export const POTION_PRICE = 5;
 
 export const ROOM_KEYS = {
@@ -65,7 +81,16 @@ export const VILLE_ROOM = {
   width: 7000,
   height: 1080,
   portal: { x: 32, y: 640 },
-  sorcier: { x: 288, y: 672 },
+  // sprites/sorcier_sprite.yy has "origin": 0 (top-left, xorigin/yorigin 0,0)
+  // unlike every other NPC sprite (marchand/guard/trainer all use a custom
+  // near-bottom origin), so the room's raw x/y (288, 672) is the sprite's
+  // top-left corner in the legacy renderer, not its bottom-center. Player.ts
+  // and NPC.ts both draw with setOrigin(0.5, 1) (bottom-center), so reusing
+  // the raw coordinate put the sorcerer ~380px too high, floating in the
+  // sky. Converted here using sorcier_sprite's own size (214x381):
+  //   x' = x + width/2  = 288 + 107 = 395
+  //   y' = y + height   = 672 + 381 = 1053
+  sorcier: { x: 395, y: 1053 },
   generalStore: { x: 4377.5, y: 917 },
   generalStoreDoor: { x: 4608, y: 672 },
   potion: { x: 5440, y: 768 },

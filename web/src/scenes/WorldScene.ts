@@ -32,6 +32,9 @@ export abstract class WorldScene extends Phaser.Scene {
 
   protected onPortalEnter?: () => void;
 
+  /** Room-specific "approach + press Up" interactions besides the portal (e.g. TownScene's shop door). */
+  protected upInteractables: Array<{ target: Phaser.GameObjects.Sprite; action: () => void }> = [];
+
   create() {
     this.physics.world.setBounds(0, 0, this.roomWidth, this.scale.height);
     this.cameras.main.setBounds(0, 0, this.roomWidth, this.scale.height);
@@ -150,13 +153,20 @@ export abstract class WorldScene extends Phaser.Scene {
   private handleUp() {
     if (this.portal && this.overlapping(this.portal) && GameState.portalOpened) {
       this.onPortalEnter?.();
+      return;
+    }
+    for (const { target, action } of this.upInteractables) {
+      if (this.overlapping(target)) {
+        action();
+        return;
+      }
     }
   }
 
   /**
-   * Shows the contextual ▲ button, which only ever does one thing —
-   * queues `upPressed`, which `handleUp()` only acts on for an open
-   * portal (see docs/adr/0004). Talking to an NPC or buying a potion goes
+   * Shows the contextual ▲ button for anything `handleUp()` actually acts
+   * on: an open portal (see docs/adr/0004), or a registered upInteractable
+   * (e.g. TownScene's shop door). Talking to an NPC or buying a potion goes
    * through the always-visible ⚔️ action button instead, so this hint
    * must not light up for those: they'd invite a tap that does nothing.
    *
@@ -170,7 +180,8 @@ export abstract class WorldScene extends Phaser.Scene {
     const tc = getTouchControls();
     if (!tc) return;
     const nearPortal = !!this.portal && GameState.portalOpened && this.overlapping(this.portal);
-    tc.setContextVisible(!this.dialogue.visible && nearPortal);
+    const nearUpInteractable = this.upInteractables.some(({ target }) => this.overlapping(target));
+    tc.setContextVisible(!this.dialogue.visible && (nearPortal || nearUpInteractable));
   }
 
   protected overlapping(target: Phaser.GameObjects.Sprite): boolean {
