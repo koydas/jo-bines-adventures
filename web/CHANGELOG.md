@@ -1,8 +1,8 @@
 # Changelog
 
 All notable changes to the web version of Jo Bine's Adventures are recorded
-here. The original GameMaker project (`platformer/`) had its own build
-history up to `0.3.5` (see `platformer/builds/html5/`); this changelog
+here. The original GameMaker project (`_legacy/`) had its own build
+history up to `0.3.5` (see `_legacy/builds/html5/`); this changelog
 picks up from there for the new web port.
 
 ## [0.4.0] - Unreleased

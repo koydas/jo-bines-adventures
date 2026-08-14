@@ -1,9 +1,9 @@
 /**
  * Gameplay constants ported 1:1 from the original GameMaker project
- * (platformer/scripts/character_stats, ennemy_stats, cooldowns, ...).
+ * (_legacy/scripts/character_stats, ennemy_stats, cooldowns, ...).
  *
  * Coordinates below reuse the exact pixel positions from the original
- * rooms (see platformer/rooms, one folder per room, each with a .yy file)
+ * rooms (see _legacy/rooms, one folder per room, each with a .yy file)
  * so the world layout matches the original game.
  */
 

@@ -14,7 +14,7 @@ import shutil
 import sys
 from pathlib import Path
 
-PLATFORMER = Path(__file__).resolve().parents[2] / "platformer"
+LEGACY = Path(__file__).resolve().parents[2] / "_legacy"
 DEST = Path(__file__).resolve().parents[1] / "public" / "assets"
 
 FRAME_RE = re.compile(r'"name":"([0-9a-fA-F-]{36})","tags":\[\],"resourceType":"GMSpriteFrame"')
@@ -27,7 +27,7 @@ def frame_order(sprite_dir: Path) -> list[str]:
 
 
 def extract(sprite_name: str, dest_subdir: str, dest_name: str) -> int:
-    sprite_dir = PLATFORMER / "sprites" / sprite_name
+    sprite_dir = LEGACY / "sprites" / sprite_name
     order = frame_order(sprite_dir)
     out_dir = DEST / dest_subdir
     out_dir.mkdir(parents=True, exist_ok=True)

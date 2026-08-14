@@ -11,7 +11,7 @@ see itch.io: https://koydas.itch.io/les-aventures-du-bonhomme-bizarre
 
 ## Two versions in this repo
 
-- **`platformer/`** — the original GameMaker Studio 2 project.
+- **`_legacy/`** — the original GameMaker Studio 2 project.
 - **`web/`** — a modern TypeScript + Phaser 3 port, built to be played
   straight from a browser (including iPhone Safari, with touch controls and
   "Add to Home Screen" support) and to be easy to keep developing on with

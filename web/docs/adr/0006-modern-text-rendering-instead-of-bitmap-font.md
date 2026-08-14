@@ -43,6 +43,6 @@ lookup.
   aesthetic — a deliberate part of "modernizing" the game's presentation,
   not just its plumbing. If pixel-perfect visual parity with the original
   is wanted later, the letter sprites already exist in
-  `platformer/sprites/` and could be extracted the same way
+  `_legacy/sprites/` and could be extracted the same way
   `scripts/extract_sprites.py` extracts the other sprites — but that's a
   new decision, not a revert of this one.

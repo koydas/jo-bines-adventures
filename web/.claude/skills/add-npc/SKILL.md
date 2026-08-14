@@ -30,7 +30,7 @@ you already know that shape.
 ## 2. Sprite
 
 - If the sprite already exists in the original GameMaker project
-  (`platformer/sprites/<name>_sprite/`), extract it:
+  (`_legacy/sprites/<name>_sprite/`), extract it:
   ```bash
   # add an entry to SPRITES in scripts/extract_sprites.py first, e.g.:
   # ("some_npc_sprite", "npc", "some_npc"),

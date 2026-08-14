@@ -4,7 +4,7 @@
 [![End-to-End Tests](https://github.com/koydas/jo-bines-adventures/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/koydas/jo-bines-adventures/actions/workflows/e2e-tests.yml)
 
 A modern **TypeScript + [Phaser 3](https://phaser.io)** port of the original
-GameMaker game (`platformer/`), built to be played straight from a browser —
+GameMaker game (`_legacy/`), built to be played straight from a browser —
 including iPhone Safari, with touch controls and "Add to Home Screen"
 support — and to be easy to keep developing with Claude Code, without
 needing GameMaker Studio installed. See
@@ -54,7 +54,7 @@ to test the game.
 
 ### Re-extracting sprites from the GameMaker project
 
-If you change a sprite in `platformer/` (GameMaker Studio), re-run the
+If you change a sprite in `_legacy/` (GameMaker Studio), re-run the
 extraction script to sync `public/assets/`:
 
 ```bash

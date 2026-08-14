@@ -3,7 +3,7 @@
 Reference documentation for the web port of Jo Bine's Adventures
 (TypeScript + Phaser 3, in `web/`). This documents the current source of
 truth for game content — when it disagrees with the original GameMaker
-project in `platformer/`, the code in `web/src` (and this doc set) wins,
+project in `_legacy/`, the code in `web/src` (and this doc set) wins,
 since that's what ships.
 
 - [`gameplay-mechanics.md`](./gameplay-mechanics.md) — movement, combat,

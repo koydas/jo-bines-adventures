@@ -8,12 +8,12 @@ Accepted
 
 ## Context
 
-The original game (`platformer/`) is a GameMaker Studio 2 project: GML
+The original game (`_legacy/`) is a GameMaker Studio 2 project: GML
 scripts and `.yy`/`.yyp` JSON-ish resource files, edited and compiled
 through GameMaker's own IDE. Two goals drove wanting to change that:
 
 1. **Play easily on iPhone.** GameMaker can export to HTML5 (there are
-   zipped builds up to `0.3.5` in `platformer/builds/html5/`), so a
+   zipped builds up to `0.3.5` in `_legacy/builds/html5/`), so a
    browser build was already technically possible — but the game had no
    touch input at all (`character_controls_rules.gml` only reads
    keyboard and gamepad), so it wasn't actually playable on a phone
@@ -48,8 +48,8 @@ mobile Safari.
   build step in the loop.
 - The game runs anywhere a browser does, including installed to the
   iPhone home screen as a fullscreen PWA — no App Store, no native build.
-- `platformer/` (GameMaker) and `web/` (Phaser) are now two separate
-  implementations of the same game. `platformer/` is kept as the
+- `_legacy/` (GameMaker) and `web/` (Phaser) are now two separate
+  implementations of the same game. `_legacy/` is kept as the
   historical/reference version; `web/` is where active development
   happens. Content added to one does not automatically appear in the
   other.

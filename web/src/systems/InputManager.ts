@@ -4,7 +4,7 @@ import { touchState } from "./touchState";
 /**
  * Unifies keyboard, on-screen touch controls and gamepad into a single
  * frame-by-frame input state, mirroring the control scheme from
- * platformer/scripts/character_controls_rules/character_controls_rules.gml:
+ * _legacy/scripts/character_controls_rules/character_controls_rules.gml:
  *
  *  - left/right: move
  *  - action (ctrl in the original): attack / talk / buy / confirm
