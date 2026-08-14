@@ -1,0 +1,15 @@
+{
+  "name": "Les Aventures de Jo Bine",
+  "short_name": "Jo Bine",
+  "description": "Aventures de Jo Bine, un boy qui affronte des squelettes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#141018",
+  "theme_color": "#141018",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
