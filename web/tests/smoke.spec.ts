@@ -1,11 +1,17 @@
 import { test, expect, type Page } from "@playwright/test";
 import "./global.d.ts";
+import { startGame, tapKey, townPlayer } from "./helpers";
 
 /**
- * End-to-end smoke tests against the production build. These aren't a
- * substitute for playing the game, but they catch "the build is broken" /
- * "a core loop no longer works" regressions automatically on every push —
- * see .github/workflows/smoke-tests.yml and the badge in README.md.
+ * Fast integration/smoke checks against the production build: seed state
+ * directly (teleport the player, grant money) to reach the interaction
+ * under test quickly, then assert the outcome. These catch "the build is
+ * broken" / "a core loop no longer works" regressions on every push — see
+ * .github/workflows/smoke-tests.yml and the badge in README.md.
+ *
+ * For tests that actually drive the character with real input (held
+ * movement keys, tapped touch buttons) end to end, see
+ * tests/controls.spec.ts instead.
  *
  * Everything the game draws through Phaser (titles, dialogue, HUD, "Vous
  * avez perdu", ...) is rasterized to a <canvas> — there's no DOM text for
@@ -22,29 +28,6 @@ import "./global.d.ts";
  * with generous timeouts instead of using fixed waits, so this suite stays
  * reliable on slower CI runners.
  */
-
-async function tapKey(page: Page, key: string) {
-  await page.keyboard.down(key);
-  await page.keyboard.up(key);
-}
-
-async function startGame(page: Page) {
-  await page.goto("/");
-  await page.waitForFunction(() => !!window.__game);
-  await expect.poll(() => page.evaluate(() => window.__game.scene.isActive("MainMenu")), { timeout: 15_000 }).toBe(true);
-
-  const viewport = page.viewportSize() ?? { width: 800, height: 600 };
-  await page.mouse.click(viewport.width / 2, viewport.height / 2);
-
-  await expect.poll(() => page.evaluate(() => window.__game.scene.isActive("Town")), { timeout: 15_000 }).toBe(true);
-}
-
-function townPlayer(page: Page) {
-  return page.evaluate(() => {
-    const p = window.__game.scene.keys.Town.player;
-    return { x: p.x, hp: p.hp, maxHp: p.maxHp, money: p.money, nbPotions: p.nbPotions };
-  });
-}
 
 /** Talks to the Sorcerer and accepts the quest, opening the portal. */
 async function acceptQuest(page: Page) {

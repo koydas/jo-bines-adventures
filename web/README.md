@@ -1,6 +1,7 @@
 # Les Aventures de Jo Bine — web edition
 
 [![Smoke Tests](https://github.com/koydas/jo-bines-adventures/actions/workflows/smoke-tests.yml/badge.svg)](https://github.com/koydas/jo-bines-adventures/actions/workflows/smoke-tests.yml)
+[![End-to-End Tests](https://github.com/koydas/jo-bines-adventures/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/koydas/jo-bines-adventures/actions/workflows/e2e-tests.yml)
 
 A modern **TypeScript + [Phaser 3](https://phaser.io)** port of the original
 GameMaker game (`platformer/`), built to be played straight from a browser —
@@ -62,15 +63,31 @@ python3 scripts/extract_sprites.py
 
 ### Testing
 
+Two Playwright suites, both driving the actual production build
+(`vite preview`, not the dev server) on both a desktop and a touch/mobile
+viewport, and both running in CI on every push:
+
 ```bash
-npm run test:smoke   # builds, then runs the Playwright smoke suite
+npm run test:smoke   # fast integration checks (.github/workflows/smoke-tests.yml)
+npm run test:e2e     # slower, controls-driven end-to-end checks (.github/workflows/e2e-tests.yml)
+npm test             # both
 ```
 
-See [`tests/smoke.spec.ts`](tests/smoke.spec.ts) — it drives the actual
-production build (`vite preview`, not the dev server) through the core
-loops (menu → town → shop → quest → portal → combat → death/restart) on
-both a desktop and a touch/mobile viewport, and runs in CI on every push
-(`.github/workflows/smoke-tests.yml`, badge above).
+- [`tests/smoke.spec.ts`](tests/smoke.spec.ts) seeds state directly
+  (teleports the player, grants money) to reach an interaction quickly and
+  checks the outcome — the core loops (menu → town → shop → quest →
+  portal → combat → death/restart) in a few seconds each.
+- [`tests/controls.spec.ts`](tests/controls.spec.ts) instead drives the
+  character with the same input a player uses — held movement keys,
+  tapped/held on-screen touch buttons — and asserts the character actually
+  moves and reacts: walking with the keyboard and the touch D-pad, walking
+  to and buying a potion, drinking one, walking into the Sorcerer and a
+  Skeleton. Slower (real walking takes real time), but it's exercising the
+  controls themselves, not just the state they lead to.
+
+See [`tests/helpers.ts`](tests/helpers.ts) for the shared setup and for
+why movement assertions poll for an outcome instead of holding a key for a
+fixed duration.
 
 ## Deploying to your own server (Docker)
 

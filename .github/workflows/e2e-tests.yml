@@ -1,11 +1,11 @@
-name: Smoke Tests
+name: End-to-End Tests
 
 on:
   push:
     branches: [master, main]
-    paths: ["web/**", ".github/workflows/smoke-tests.yml"]
+    paths: ["web/**", ".github/workflows/e2e-tests.yml"]
   pull_request:
-    paths: ["web/**", ".github/workflows/smoke-tests.yml"]
+    paths: ["web/**", ".github/workflows/e2e-tests.yml"]
   workflow_dispatch:
 
 defaults:
@@ -13,10 +13,10 @@ defaults:
     working-directory: web
 
 jobs:
-  smoke:
-    name: Build & smoke test
+  e2e:
+    name: Build & run controls-driven E2E tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -35,13 +35,13 @@ jobs:
       - name: Type-check & build
         run: npm run build
 
-      - name: Run smoke tests
-        run: npx playwright test tests/smoke.spec.ts
+      - name: Run end-to-end tests
+        run: npx playwright test tests/controls.spec.ts
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-smoke
+          name: playwright-report-e2e
           path: web/playwright-report/
           retention-days: 14
