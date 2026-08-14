@@ -9,6 +9,9 @@ declare global {
   interface Window {
     __game: Game;
     __gameState: typeof GameState;
+    // Set by tests/helpers.ts's armActionWatch, read by readActionWatch —
+    // not part of the app itself.
+    __actionWatch: Promise<boolean>;
   }
 }
 

@@ -68,8 +68,9 @@ per live Skeleton:
 
 - **Player hits Skeleton**: if `player.isAttacking` (mid-punch animation)
   and overlapping, `skeleton.takeDamage(randomDamage(1, 3), time)`. The
-  skeleton has its own 250ms post-hit invincibility window so one punch
-  animation can't multi-hit it across several frames of overlap.
+  skeleton has its own 500ms post-hit invincibility window (longer than
+  the ~375ms punch animation) so one punch animation can't multi-hit it
+  across several frames of overlap.
 - **Skeleton hits player**: if `skeleton.isAttacking` and overlapping,
   `player.takeDamage(randomDamage(1, 3), time)`. The player has a 1000ms
   post-hit invincibility window (`COOLDOWNS.takeHitMs`).

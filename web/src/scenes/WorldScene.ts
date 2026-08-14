@@ -59,6 +59,11 @@ export abstract class WorldScene extends Phaser.Scene {
 
   update(time: number, _delta: number) {
     this.player.setDepth(10);
+    // Must run before the movement/action gating below: this is what
+    // actually clears "attack"/"hit" once their fixed duration is up (see
+    // Player.updateTimedAction() for why that's time-based rather than
+    // tied to the punch/hit animation completing).
+    this.player.updateTimedAction(time);
 
     const state = this.inputManager.read();
 

@@ -20,6 +20,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   private attackTimer = 0;
   private takeHitTimer = 0;
+  private actionUntil = 0;
   private groundY: number;
   private onDeath: () => void;
 
@@ -91,15 +92,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   /** Returns true if the punch actually started (i.e. wasn't on cooldown). */
   punch(now: number): boolean {
     if (this.isDead) return false;
+    // Same reasoning as move()'s "hit" guard: without it, pressing action
+    // during the char-hit reaction immediately overwrites it with
+    // "attack", bypassing the hit-stun the movement guards now preserve.
+    if (this.action === "hit") return false;
     if (this.isOnCooldown(this.attackTimer, COOLDOWNS.attackMs)) return false;
 
     this.action = "attack";
     this.attackTimer = now;
+    this.actionUntil = now + COOLDOWNS.attackDurationMs;
     this.getBody().setVelocityX(0);
     this.play("char-punch", true);
-    this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-      if (this.action === "attack") this.goIdle();
-    });
 
     // punch_movement.gml: small forward lunge while attacking.
     const lunge = 60 * this.facing;
@@ -134,17 +137,37 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // goIdle() itself (nothing else is holding the hit state), swapping
     // char-hit back out before the player ever sees it.
     this.action = "hit";
+    this.actionUntil = now + COOLDOWNS.hitStunMs;
     this.getBody().setVelocityX(0);
     this.play("char-hit", true);
     this.scene.cameras.main.shake(120, 0.004);
-    this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-      if (this.action === "hit" && !this.isDead) this.goIdle();
-    });
 
     if (this.hp <= 0) {
       this.hp = 0;
       this.die();
     }
+  }
+
+  /**
+   * Clears a timed "attack"/"hit" action once its fixed duration elapses.
+   * Deliberately a plain deadline check against `now` — the same real
+   * clock every other cooldown here already uses — rather than the
+   * punch/hit animation's own ANIMATION_COMPLETE event, which is what
+   * both used to rely on. Under heavy frame-rate throttling (many
+   * concurrent heavy scenes, a slow device — see ADR 0002 on delta
+   * clamping), Phaser's animation timeline can fall far behind wall-clock
+   * time, so a nominally ~250-375ms animation can take many real seconds
+   * to actually fire its completion event. That left the player able to
+   * get stuck "attack"/"hit"-locked — unable to move, and (since the
+   * `move()`/`punch()` guards above now correctly respect that state, per
+   * the PR review that introduced them) unable to fight back — for as
+   * long as the animation stayed stalled. A deadline against `now` can't
+   * stall the same way: it clears exactly `actionUntil` after it was set,
+   * regardless of how slowly frames are actually arriving.
+   */
+  updateTimedAction(now: number) {
+    if (this.isDead) return;
+    if ((this.action === "attack" || this.action === "hit") && now >= this.actionUntil) this.goIdle();
   }
 
   private die() {

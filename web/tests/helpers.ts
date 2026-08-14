@@ -72,3 +72,43 @@ export async function holdTouchUntil(page: Page, button: Locator, condition: () 
     await button.dispatchEvent("touchend");
   }
 }
+
+/**
+ * Arms an in-page watcher for `window.__game.scene.keys[sceneKey].player.action`
+ * becoming `expected`, polling via requestAnimationFrame — call this
+ * *before* triggering the action, then `readActionWatch` afterwards to get
+ * the result. The player's own "attack"/"hit" states are deliberately
+ * bounded to a fixed real-time window matching their animation
+ * (`COOLDOWNS.attackDurationMs`/`hitStunMs`, ~250-375ms — see
+ * Player.updateTimedAction()) and clear on their own once it elapses.
+ * Arming the watcher first — rather than dispatching the input, awaiting
+ * that, and only then starting to look — matters because *starting* a new
+ * page.evaluate() round trip under this suite's tracing (`trace:
+ * "retain-on-failure"`, always recording so it can be retained on
+ * failure) can itself take longer than that window; by the time a
+ * check-after-the-fact call is even running in the page, the state can
+ * have already come and gone. A watcher already running in the page when
+ * the action fires can't miss it — the same rAF loop that's about to
+ * process the queued input is what makes the transition visible to it.
+ */
+export async function armActionWatch(page: Page, sceneKey: string, expected: string, timeoutMs = 5_000) {
+  await page.evaluate(
+    ({ sceneKey, expected, timeoutMs }) => {
+      window.__actionWatch = new Promise<boolean>((resolve) => {
+        const deadline = performance.now() + timeoutMs;
+        function check() {
+          if (window.__game.scene.keys[sceneKey].player.action === expected) return resolve(true);
+          if (performance.now() >= deadline) return resolve(false);
+          requestAnimationFrame(check);
+        }
+        check();
+      });
+    },
+    { sceneKey, expected, timeoutMs },
+  );
+}
+
+/** Reads the result armed by `armActionWatch` — call after triggering the action. */
+export function readActionWatch(page: Page): Promise<boolean> {
+  return page.evaluate(() => window.__actionWatch);
+}

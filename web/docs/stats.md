@@ -29,7 +29,7 @@ in `src/constants.ts`.
 | Aggro range | 1000 px | Distance from the player at which a skeleton becomes hostile. Once aggroed, a skeleton **stays** hostile for the rest of the room (matches the original's `in_combat = in_combat || ...` — no de-aggro) |
 | Attack range | 300 px | Distance at which a skeleton switches from walking to attacking |
 | Attack cooldown | 3000 ms | `SKELETON_STATS.attackCooldownMs` |
-| Hit invincibility | 250 ms | A skeleton can't take damage again within 250ms of the last hit (`Skeleton.takeDamage`'s internal cooldown), so one punch animation doesn't multi-hit |
+| Hit invincibility | 500 ms | A skeleton can't take damage again within 500ms of the last hit (`Skeleton.takeDamage`'s internal cooldown, `SKELETON_STATS.hitInvincibilityMs`) — longer than the ~375ms punch animation, so one punch doesn't multi-hit |
 | Money dropped | 5$ | `SKELETON_STATS.money`, added to the player on death |
 | XP dropped | 1 | `SKELETON_STATS.experience` |
 

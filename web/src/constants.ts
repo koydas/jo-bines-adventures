@@ -42,7 +42,13 @@ export const SKELETON_STATS = {
 export const COOLDOWNS = {
   attackMs: 1000,
   takeHitMs: 1000,
-  invisibilityMs: 250,
+  // How long the player's "attack"/"hit" action lasts before Player reverts
+  // it to idle on its own — matches char-punch/char-hit's nominal animation
+  // length (see BootScene), but is a plain deadline checked against the
+  // real clock rather than the animation's own completion event. See the
+  // comment on Player.updateTimedActions() for why that distinction matters.
+  attackDurationMs: 375,
+  hitStunMs: 250,
 };
 
 export const POTION_PRICE = 5;

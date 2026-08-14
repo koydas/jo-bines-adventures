@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import "./global.d.ts";
-import { startGame, tapKey, townPlayer } from "./helpers";
+import { armActionWatch, readActionWatch, startGame, tapKey, townPlayer } from "./helpers";
 
 /**
  * Fast integration/smoke checks against the production build: seed state
@@ -205,11 +205,15 @@ test.describe("mobile touch controls", () => {
 
   test("tapping the attack button plays the punch animation", async ({ page }) => {
     await startGame(page);
+
+    // Arm the watcher *before* dispatching the tap — see armActionWatch's
+    // doc comment for why checking only after the tap (the naive
+    // expect.poll approach) can miss this genuinely brief, fixed-duration
+    // state entirely under this suite's tracing.
+    await armActionWatch(page, "Town", "attack");
     await page.getByLabel("Attaquer / Parler").dispatchEvent("touchstart");
 
-    await expect
-      .poll(() => page.evaluate(() => window.__game.scene.keys.Town.player.action), { timeout: 10_000 })
-      .toBe("attack");
+    expect(await readActionWatch(page)).toBe(true);
   });
 });
 
