@@ -74,19 +74,21 @@ export const PLAYER_GROUND_OFFSET = 171;
 // which anchors that bottom edge (not the blade tips) at the tile's y, so
 // without this the ground tile floats noticeably above every other
 // ground-anchored decor piece at the 0.55 scale both rooms use. The base
-// 62px closes that measured gap exactly; +30px is a further by-eye nudge
-// (15% of the tile's own 199px display height) requested on top of that.
-export const GRASS_TILE_GROUND_OFFSET = Math.round(113 * 0.55) + Math.round(0.15 * 361 * 0.55); // ≈ 62 + 30 = 92px
+// 62px closes that measured gap exactly; the rest is further by-eye nudges
+// requested on top of that (each round +X% of the offset so far):
+// +15% -> 92px, then +30% -> 120px.
+export const GRASS_TILE_GROUND_OFFSET = Math.round((Math.round(113 * 0.55) + Math.round(0.15 * 361 * 0.55)) * 1.3); // ≈ 120px
 
-// Tree scale/position, tuned by eye across a couple of feedback rounds
-// (bigger, lower) rather than derived from a single measurement like the
-// offsets above. city_tree_0.png has 172px of transparent canvas below the
-// visible tree (14% of its 1236px height); TREE_GROUND_OFFSET below closes
-// 40% of that gap at each room's current tree scale.
+// Tree scale/position, tuned by eye across a few feedback rounds (bigger,
+// lower) rather than derived from a single measurement like the offsets
+// above. city_tree_0.png has 172px of transparent canvas below the visible
+// tree (14% of its 1236px height); the base offset below closes 40% of
+// that gap at each room's tree scale, then a further +50% (of the offset
+// so far) was requested on top of that.
 export const TOWN_TREE_SCALE = 1.08;
-export const TOWN_TREE_GROUND_OFFSET = Math.round(0.4 * 172 * TOWN_TREE_SCALE); // ≈ 74px
+export const TOWN_TREE_GROUND_OFFSET = Math.round(Math.round(0.4 * 172 * TOWN_TREE_SCALE) * 1.5); // ≈ 111px
 export const GRAVEYARD_TREE_SCALE = 1.26;
-export const GRAVEYARD_TREE_GROUND_OFFSET = Math.round(0.4 * 172 * GRAVEYARD_TREE_SCALE); // ≈ 87px
+export const GRAVEYARD_TREE_GROUND_OFFSET = Math.round(Math.round(0.4 * 172 * GRAVEYARD_TREE_SCALE) * 1.5); // ≈ 131px
 
 // Same class of bug as PLAYER_GROUND_OFFSET, just never corrected at all:
 // sprites/skeleton_*_sprite.yy's custom yorigin puts the real feet ~47% of
