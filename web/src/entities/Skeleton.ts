@@ -31,9 +31,22 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
 
     this.setOrigin(0.5, 1);
     this.getBody().setSize(140, 300).setOffset(130, 150);
-    this.setFlipX(this.facing < 0);
+    this.updateFlip();
     this.y = this.groundY + SKELETON_GROUND_OFFSET;
     this.play("skel-idle");
+  }
+
+  /**
+   * scripts/move_toward_object's turn_toward_object(): `image_xscale` goes
+   * *positive* (unflipped, its default) when facing left, negative
+   * (flipped) when facing right — the mirror of the player's own
+   * setFlipX(direction < 0) in Player.move() (character_actions.gml flips
+   * *left*, i.e. the player's default art faces right instead). Using the
+   * player's convention here flipped every skeleton to face away from
+   * whatever it was actually turned toward.
+   */
+  private updateFlip() {
+    this.setFlipX(this.facing > 0);
   }
 
   private getBody(): Phaser.Physics.Arcade.Body {
@@ -82,7 +95,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     const padding = 100;
     const distance = Math.abs(targetX - this.x);
     this.facing = targetX < this.x ? -1 : 1;
-    this.setFlipX(this.facing < 0);
+    this.updateFlip();
 
     if (this.action !== "walk" && this.action !== "attack") {
       this.action = "walk";
@@ -118,7 +131,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
   private walkTowardOnce(targetX: number, speed: number) {
     const distance = Math.abs(targetX - this.x);
     this.facing = targetX < this.x ? -1 : 1;
-    this.setFlipX(this.facing < 0);
+    this.updateFlip();
     this.getBody().setVelocityX(distance < 100 ? 0 : this.facing * speed);
     this.y = this.groundY + SKELETON_GROUND_OFFSET;
   }
