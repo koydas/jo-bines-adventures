@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jo-bines-adventures
+  labels:
+    app.kubernetes.io/name: jo-bines-adventures
+  annotations:
+    # Pinned MetalLB address, same technique as healing-simulator's own
+    # Service (.247) and ollama-chat's (.244). In addition to, not instead
+    # of, the Ingress: http://192.168.1.248 works with zero client-side
+    # config (no /etc/hosts, no LAN DNS -- there is none), and
+    # http://jo-bines-adventures.home (via ingress-nginx's .243) still works
+    # once a hostname is set up.
+    metallb.io/loadBalancerIPs: "192.168.1.248"
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: jo-bines-adventures
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

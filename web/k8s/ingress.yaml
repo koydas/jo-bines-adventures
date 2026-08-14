@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jo-bines-adventures
+  labels:
+    app.kubernetes.io/name: jo-bines-adventures
+spec:
+  # Adjust the IngressClass name to the target cluster (nginx, traefik, ...).
+  ingressClassName: nginx
+  rules:
+    - host: jo-bines-adventures.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jo-bines-adventures
+                port:
+                  name: http

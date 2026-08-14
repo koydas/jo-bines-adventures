@@ -15,10 +15,22 @@ picks up from there for the new web port.
   enemies, and rooms consistently with the existing codebase.
 - Playwright smoke test suite (`tests/`) and a GitHub Actions workflow
   running them on every push/PR, with a status badge in the README.
+- `k8s/` (Deployment, Service, Ingress) and `.github/workflows/docker-publish.yml`
+  to self-host on a Kubernetes cluster: builds the image, pushes it to
+  `ghcr.io/koydas/jo-bines-adventures`, and bumps the deployed tag on
+  `master` for GitOps tools (ArgoCD) to sync on. Onboarded into
+  `koydas/gitops-homelab` as a git-source Application — see that repo's
+  ADR-0024.
 
 ### Changed
 - Improved `README.md` with clearer setup/deploy instructions and links to
   the new documentation.
+- `Dockerfile`/`nginx.conf` now run as non-root on port 8080
+  (`nginxinc/nginx-unprivileged`) with a `/health` endpoint and a read-only
+  root filesystem, matching the hardened `securityContext` used by the new
+  `k8s/deployment.yaml`. `docker compose up` still works the same way
+  externally; only the internal port changed (compose still publishes host
+  `8080`).
 
 ## [0.3.0] - Initial web port
 
