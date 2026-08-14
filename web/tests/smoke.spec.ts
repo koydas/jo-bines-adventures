@@ -124,22 +124,41 @@ test.describe("combat in the Graveyard", () => {
   }
 
   test("attacking a skeleton kills it and awards money/xp", async ({ page }) => {
-    await enterGraveyard(page);
-    await page.evaluate(() => (window.__game.scene.keys.Graveyard.player.x = 553));
+    // Headroom above the 30s poll below — see tests/controls.spec.ts's
+    // identically-reasoned test.setTimeout for why this can't share the
+    // global 30s per-test default.
+    test.setTimeout(45_000);
 
-    // repeatedly punch — the player also takes counter-damage from the
-    // aggroed skeleton, same as real play; the graveyard has 6 skeletons
-    // total and only 10 HP is needed to drop one, so a handful of swings
-    // is enough regardless of a few missed windows
-    for (let i = 0; i < 8; i++) {
+    await enterGraveyard(page);
+    await page.evaluate(() => {
+      const player = window.__game.scene.keys.Graveyard.player;
+      player.x = 553;
+      // x:553 sits in a cluster of 3 skeletons (553/667/431, ~130px apart)
+      // that all aggro together; damage rolls up to 3 (see
+      // src/utils/random.ts), so three of them landing hits on their own
+      // ~3s cooldowns can otherwise kill a 10-HP player within a few
+      // seconds — before this test, which is about the *punch* landing,
+      // not survival (see "an aggroed skeleton attacks back..." below for
+      // that), gets a chance to land enough of its own.
+      player.hp = 999;
+      player.maxHp = 999;
+    });
+
+    // Punch repeatedly until a skeleton actually dies, rather than a fixed
+    // number of attempts: damage rolls (1-3) and the skeleton's own
+    // attack/movement AI mean the number of punches needed to land a kill
+    // varies, and a fixed budget can occasionally fall short by chance —
+    // this polls for the actual outcome instead of gambling on one.
+    const punchAndCheckMoney = async () => {
       await tapKey(page, "Control");
       // eslint-disable-next-line playwright/no-wait-for-timeout -- pacing punches past the 1s attack cooldown
-      await page.waitForTimeout(1200);
-    }
+      await page.waitForTimeout(1100);
+      return page.evaluate(() => window.__game.scene.keys.Graveyard.player.money);
+    };
+    await expect.poll(punchAndCheckMoney, { timeout: 30_000, intervals: [0] }).toBeGreaterThan(0);
 
-    const player = await page.evaluate(() => window.__game.scene.keys.Graveyard.player);
-    expect(player.money).toBeGreaterThan(0);
-    expect(player.experience).toBeGreaterThan(0);
+    const experience = await page.evaluate(() => window.__game.scene.keys.Graveyard.player.experience);
+    expect(experience).toBeGreaterThan(0);
   });
 
   test("an aggroed skeleton attacks back and damages the player", async ({ page }) => {

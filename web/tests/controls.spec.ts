@@ -208,36 +208,47 @@ test.describe("walking into interactions", () => {
   });
 
   test("walking into an aggroed skeleton and punching it deals damage", async ({ page }) => {
-    // This test's own 30s holdKeyUntil timeout below leaves no headroom
-    // under the global 30s per-test timeout (playwright.config.ts) —
-    // give it room to actually use that budget instead of being cut off
-    // by the outer timeout at the same instant.
-    test.setTimeout(60_000);
+    // This test's own timeouts below (30s to walk in + 20s to land a
+    // punch) leave no headroom under the global 30s per-test timeout
+    // (playwright.config.ts) — give it room to actually use that budget.
+    test.setTimeout(75_000);
 
     await startGame(page);
     await page.evaluate(() => window.__game.scene.keys.Town.scene.start("Graveyard"));
     await expect.poll(() => page.evaluate(() => window.__game.scene.isActive("Graveyard")), { timeout: 10_000 }).toBe(true);
-    await page.evaluate(() => (window.__game.scene.keys.Graveyard.player.x = 950));
+    await page.evaluate(() => {
+      const player = window.__game.scene.keys.Graveyard.player;
+      player.x = 950;
+      // The walk below ends in a cluster of 3 skeletons (553/667/431,
+      // ~130px apart) that all aggro and close in together; damage rolls
+      // up to 3 (see src/utils/random.ts), so three of them landing hits
+      // on their own ~3s cooldowns can otherwise kill a 10-HP player
+      // during the approach — before this test, which is about the
+      // *punch* landing, not survival, ever gets a swing in.
+      player.hp = 999;
+      player.maxHp = 999;
+    });
 
-    // A more generous timeout than other movement tests: this room also
-    // runs 6 skeletons' AI + combat overlap checks every frame, which
-    // measurably slows effective game-time under CPU contention (see
-    // docs/adr/0002 on delta-clamped physics/animation).
     await holdKeyUntil(page, "ArrowLeft", async () => (await graveyardPlayer(page)).x <= 650, 30_000);
-    await tapKey(page, "Control");
 
-    // the skeleton may counter-attack in the same exchange — either HP
-    // total moving is evidence the punch (or its retaliation) connected
-    await expect
-      .poll(
-        () =>
-          page.evaluate(() => {
-            const scene = window.__game.scene.keys.Graveyard;
-            const anySkeletonHurt = scene["skeletons"].some((s: { hp: number }) => s.hp < 10);
-            return anySkeletonHurt || scene.player.hp < 10;
-          }),
-        { timeout: 15_000 },
-      )
-      .toBe(true);
+    // Punch repeatedly (respecting the 1s attack cooldown) rather than
+    // once: skeletons keep moving right up to the moment the walk above
+    // stops, so a single swing can land a beat too early or late even
+    // though the player is clearly in the middle of the pack — the fix
+    // is to keep swinging like a player actually would, not to guess a
+    // single "right" instant. Asserts the skeleton specifically took
+    // damage — not "the skeleton was hurt OR the player was", which the
+    // aggroed skeletons' own retaliation could satisfy on its own and let
+    // a real "the punch stopped landing" regression pass silently.
+    const punchAndCheckSkeletonHurt = async () => {
+      await tapKey(page, "Control");
+      // eslint-disable-next-line playwright/no-wait-for-timeout -- pacing punches past the 1s attack cooldown
+      await page.waitForTimeout(1100);
+      return page.evaluate(() => {
+        const scene = window.__game.scene.keys.Graveyard;
+        return scene["skeletons"].some((s: { hp: number }) => s.hp < 10);
+      });
+    };
+    await expect.poll(punchAndCheckSkeletonHurt, { timeout: 20_000, intervals: [0] }).toBe(true);
   });
 });

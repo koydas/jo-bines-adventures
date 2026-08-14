@@ -123,10 +123,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.takeHitTimer = now;
     this.hp -= amount;
 
+    // Set before playing the animation, same as punch()'s "attack": without
+    // it, action is still "idle"/"run" (or an interrupted "attack") for the
+    // rest of this frame, and the very next WorldScene.update() calls
+    // goIdle() itself (nothing else is holding the hit state), swapping
+    // char-hit back out before the player ever sees it.
+    this.action = "hit";
+    this.getBody().setVelocityX(0);
     this.play("char-hit", true);
     this.scene.cameras.main.shake(120, 0.004);
     this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-      if (!this.isDead) this.goIdle();
+      if (this.action === "hit" && !this.isDead) this.goIdle();
     });
 
     if (this.hp <= 0) {
