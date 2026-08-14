@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { PORTAL_SCALE } from "../constants";
 import { GameState } from "../state/GameState";
 
 /** Ports objects/Portail (Create/Draw/Step/Other_7). */
@@ -10,7 +11,7 @@ export class Portal extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this, true);
     this.setOrigin(0.5, 1);
-    this.setScale(0.7);
+    this.setScale(PORTAL_SCALE);
     this.refresh();
   }
 

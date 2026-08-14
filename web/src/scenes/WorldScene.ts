@@ -37,6 +37,17 @@ export abstract class WorldScene extends Phaser.Scene {
 
   create() {
     this.physics.world.setBounds(0, 0, this.roomWidth, this.scale.height);
+    // The player is the only body with collideWorldBounds on, and it never
+    // moves vertically (no jump/gravity — see main.ts's gravity: {x:0,y:0}):
+    // y is fully owned by Player's groundY+offset assignments.
+    // PLAYER_GROUND_OFFSET pushes the body's bottom edge past the world's
+    // bottom bound (GAME_HEIGHT), so with vertical bounds-checking left on,
+    // Arcade clamped the body back up every physics step right after
+    // Player's own code had just set it back down — a tug-of-war that
+    // showed up as the idle "hop" and a sudden pop when starting to run.
+    // (Body#checkCollision.up/down governs body-vs-body separation, not
+    // world bounds — this is the actual switch for that, World#checkCollision.)
+    this.physics.world.setBoundsCollision(true, true, false, false);
     this.cameras.main.setBounds(0, 0, this.roomWidth, this.scale.height);
 
     const start = this.playerStart();

@@ -26,22 +26,25 @@ export const SKELETON_STATS = {
   walkSpeed: 300, // 5 px/frame * 60fps
   aggroRange: 1000,
   attackRange: 300,
-  attackCooldownMs: 3000,
+  // Halved (was 3000) — combat felt too slow.
+  attackCooldownMs: 1500,
   money: 5,
   experience: 1,
   // How long a skeleton is immune to further damage after being hit, so a
   // single punch (char-punch: 6 frames @ 16fps = 375ms, see BootScene)
   // can't roll and connect twice while the player and skeleton stay
   // overlapped for the whole animation. Must stay comfortably under the
-  // player's own attack cooldown (COOLDOWNS.attackMs, 1000ms) so two
-  // separate punches still both land.
-  hitInvincibilityMs: 500,
+  // player's own attack cooldown (COOLDOWNS.attackMs) so two separate
+  // punches still both land. Halved along with attackMs to preserve that
+  // margin (was 500).
+  hitInvincibilityMs: 250,
 };
 
 // cooldowns.gml
 export const COOLDOWNS = {
-  attackMs: 1000,
-  takeHitMs: 1000,
+  // Both halved (were 1000) — combat felt too slow.
+  attackMs: 500,
+  takeHitMs: 500,
   // How long the player's "attack"/"hit" action lasts before Player reverts
   // it to idle on its own — matches char-punch/char-hit's nominal animation
   // length (see BootScene), but is a plain deadline checked against the
@@ -70,8 +73,29 @@ export const PLAYER_GROUND_OFFSET = 171;
 // canvas's own bottom edge). Both rooms draw it with setOrigin(0.5, 1),
 // which anchors that bottom edge (not the blade tips) at the tile's y, so
 // without this the ground tile floats noticeably above every other
-// ground-anchored decor piece at the 0.55 scale both rooms use.
-export const GRASS_TILE_GROUND_OFFSET = Math.round(113 * 0.55); // ≈ 62px
+// ground-anchored decor piece at the 0.55 scale both rooms use. The base
+// 62px closes that measured gap exactly; +30px is a further by-eye nudge
+// (15% of the tile's own 199px display height) requested on top of that.
+export const GRASS_TILE_GROUND_OFFSET = Math.round(113 * 0.55) + Math.round(0.15 * 361 * 0.55); // ≈ 62 + 30 = 92px
+
+// Tree scale/position, tuned by eye across a couple of feedback rounds
+// (bigger, lower) rather than derived from a single measurement like the
+// offsets above. city_tree_0.png has 172px of transparent canvas below the
+// visible tree (14% of its 1236px height); TREE_GROUND_OFFSET below closes
+// 40% of that gap at each room's current tree scale.
+export const TOWN_TREE_SCALE = 1.08;
+export const TOWN_TREE_GROUND_OFFSET = Math.round(0.4 * 172 * TOWN_TREE_SCALE); // ≈ 74px
+export const GRAVEYARD_TREE_SCALE = 1.26;
+export const GRAVEYARD_TREE_GROUND_OFFSET = Math.round(0.4 * 172 * GRAVEYARD_TREE_SCALE); // ≈ 87px
+
+// Same class of bug as PLAYER_GROUND_OFFSET, just never corrected at all:
+// sprites/skeleton_*_sprite.yy's custom yorigin puts the real feet ~47% of
+// the canvas height above its bottom edge (idle=482-254, walk=442-233,
+// attack=417-224 — unlike the player's frames, these three agree closely,
+// so one shared value doesn't pop between states). Skeleton draws with
+// setOrigin(0.5, 1) and set `y = groundY` with no offset at all, so it
+// floated by that ~228px in every state.
+export const SKELETON_GROUND_OFFSET = 228;
 
 export const POTION_PRICE = 5;
 
@@ -93,7 +117,10 @@ export const VILLE_ROOM = {
   // invisible while closed, so unnoticed until the opening animation
   // revealed it floating in the sky right after talking to the sorcerer.
   // Converted the same way: x' = x + width/2 = 32+123.5, y' = y + height = 640+415.
-  portal: { x: 155.5, y: 1055 },
+  // y then nudged up 17px (PORTAL_SCALE below doubled the portal's size —
+  // 3% of its new 581px display height) as a further by-eye tweak on top
+  // of that already-corrected baseline.
+  portal: { x: 155.5, y: 1038 },
   // sprites/sorcier_sprite.yy has "origin": 0 (top-left, xorigin/yorigin 0,0)
   // unlike every other NPC sprite (marchand/guard/trainer all use a custom
   // near-bottom origin), so the room's raw x/y (288, 672) is the sprite's
@@ -138,6 +165,10 @@ export const PORTAL = {
   cityX: 32,
   graveyardX: 8160,
 };
+
+// 2x Portal.ts's old 0.7 scale — requested bigger, on top of the
+// position fix above.
+export const PORTAL_SCALE = 1.4;
 
 // scripts/marchand_discussion_step_1
 export const MARCHAND_LINES = [

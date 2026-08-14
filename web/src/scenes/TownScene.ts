@@ -5,7 +5,7 @@ import { Sorcerer } from "../entities/Sorcerer";
 import { Potion } from "../entities/Potion";
 import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
-import { GRASS_TILE_GROUND_OFFSET, VILLE_ROOM } from "../constants";
+import { GRASS_TILE_GROUND_OFFSET, TOWN_TREE_GROUND_OFFSET, TOWN_TREE_SCALE, VILLE_ROOM } from "../constants";
 
 /** Ports rooms/ville (town square, general store, portal to the graveyard). */
 export class TownScene extends WorldScene {
@@ -43,8 +43,11 @@ export class TownScene extends WorldScene {
       if (i % 2 === 0) {
         this.add.image(x, 900, "env-city-rocks").setScale(0.3).setOrigin(0.5, 1).setDepth(-3);
       } else {
-        // 3x the rocks' scale — at 0.3 the trees read as shrubs next to the character.
-        this.add.image(x, 900, "env-city-tree").setScale(0.9).setOrigin(0.5, 1).setDepth(-3);
+        this.add
+          .image(x, 900 + TOWN_TREE_GROUND_OFFSET, "env-city-tree")
+          .setScale(TOWN_TREE_SCALE)
+          .setOrigin(0.5, 1)
+          .setDepth(-3);
       }
     });
 

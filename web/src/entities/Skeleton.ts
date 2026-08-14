@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { SKELETON_STATS } from "../constants";
+import { SKELETON_GROUND_OFFSET, SKELETON_STATS } from "../constants";
 import type { Player } from "./Player";
 
 type SkeletonAction = "idle" | "walk" | "attack";
@@ -32,6 +32,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5, 1);
     this.getBody().setSize(140, 300).setOffset(130, 150);
     this.setFlipX(this.facing < 0);
+    this.y = this.groundY + SKELETON_GROUND_OFFSET;
     this.play("skel-idle");
   }
 
@@ -95,7 +96,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     } else {
       this.getBody().setVelocityX(this.facing * speed);
     }
-    this.y = this.groundY;
+    this.y = this.groundY + SKELETON_GROUND_OFFSET;
   }
 
   private startAttack(now: number) {
@@ -119,7 +120,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     this.facing = targetX < this.x ? -1 : 1;
     this.setFlipX(this.facing < 0);
     this.getBody().setVelocityX(distance < 100 ? 0 : this.facing * speed);
-    this.y = this.groundY;
+    this.y = this.groundY + SKELETON_GROUND_OFFSET;
   }
 
   takeDamage(amount: number, now: number) {
