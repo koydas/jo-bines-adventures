@@ -36,7 +36,7 @@ export class TownScene extends WorldScene {
   protected buildRoom() {
     this.cameras.main.setBackgroundColor("#6fb7de");
 
-    this.add.rectangle(this.roomWidth / 2, 980, this.roomWidth + 400, 220, 0x4a7a3c).setDepth(-5);
+    this.add.rectangle(this.roomWidth / 2, 980, this.roomWidth + 400, 220, 0x6b4a2f).setDepth(-5); // brown, per feedback (was green)
 
     // Ground tiling.
     const grassTile = this.textures.get("env-city-grass").getSourceImage() as HTMLImageElement;
