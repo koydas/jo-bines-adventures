@@ -20,6 +20,16 @@ export interface InputState {
   upPressed: boolean;
 }
 
+interface PadState {
+  left: boolean;
+  right: boolean;
+  action: boolean;
+  item: boolean;
+  up: boolean;
+}
+
+const NO_PAD_STATE: PadState = { left: false, right: false, action: false, item: false, up: false };
+
 export class InputManager {
   private scene: Phaser.Scene;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -34,9 +44,18 @@ export class InputManager {
   // while held), unlike the keyboard (JustDown) and touch (queued-flag)
   // paths. Track the previous frame's state so we can derive the same
   // "true for exactly one read" edge ourselves.
-  private wasPadAction = false;
-  private wasPadItem = false;
-  private wasPadUp = false;
+  //
+  // Seeded from the actually-held state below rather than defaulted to
+  // false: a new InputManager is constructed on every scene transition
+  // (WorldScene.create()), and a button held across that transition (e.g.
+  // holding "up" while walking through a portal) would otherwise look like
+  // a brand-new press to the fresh instance — in the Graveyard specifically,
+  // where the arrival point overlaps the return portal, that immediately
+  // sends the player right back to Town, and back again, for as long as
+  // the button stays held.
+  private wasPadAction: boolean;
+  private wasPadItem: boolean;
+  private wasPadUp: boolean;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -51,30 +70,43 @@ export class InputManager {
       this.keyShift = kb.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
       this.keySpace = kb.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
+
+    const initialPad = this.readPad();
+    this.wasPadAction = initialPad.action;
+    this.wasPadItem = initialPad.item;
+    this.wasPadUp = initialPad.up;
   }
 
   private gamepad(): Phaser.Input.Gamepad.Gamepad | null {
     return this.scene.input.gamepad?.getPad(0) ?? null;
   }
 
-  read(): InputState {
+  private readPad(): PadState {
     const pad = this.gamepad();
-    const padLeft = !!pad && (pad.axes[0]?.getValue() < -0.5 || pad.left);
-    const padRight = !!pad && (pad.axes[0]?.getValue() > 0.5 || pad.right);
-    const padAction = !!pad && (pad.A || pad.X);
-    const padItem = !!pad && pad.B;
-    const padUp = !!pad && (pad.up || (pad.axes[1]?.getValue() ?? 0) < -0.5);
+    if (!pad) return NO_PAD_STATE;
 
-    const left = !!this.cursors?.left.isDown || !!this.keyA?.isDown || padLeft || touchState.left;
-    const right = !!this.cursors?.right.isDown || !!this.keyD?.isDown || padRight || touchState.right;
+    return {
+      left: pad.axes[0]?.getValue() < -0.5 || pad.left,
+      right: pad.axes[0]?.getValue() > 0.5 || pad.right,
+      action: pad.A || pad.X,
+      item: pad.B,
+      up: pad.up || (pad.axes[1]?.getValue() ?? 0) < -0.5,
+    };
+  }
+
+  read(): InputState {
+    const pad = this.readPad();
+
+    const left = !!this.cursors?.left.isDown || !!this.keyA?.isDown || pad.left || touchState.left;
+    const right = !!this.cursors?.right.isDown || !!this.keyD?.isDown || pad.right || touchState.right;
 
     // Rising edge only — see the wasPad* comment above.
-    const padActionPressed = padAction && !this.wasPadAction;
-    const padItemPressed = padItem && !this.wasPadItem;
-    const padUpPressed = padUp && !this.wasPadUp;
-    this.wasPadAction = padAction;
-    this.wasPadItem = padItem;
-    this.wasPadUp = padUp;
+    const padActionPressed = pad.action && !this.wasPadAction;
+    const padItemPressed = pad.item && !this.wasPadItem;
+    const padUpPressed = pad.up && !this.wasPadUp;
+    this.wasPadAction = pad.action;
+    this.wasPadItem = pad.item;
+    this.wasPadUp = pad.up;
 
     const actionPressed =
       (!!this.keyCtrl && Phaser.Input.Keyboard.JustDown(this.keyCtrl)) ||

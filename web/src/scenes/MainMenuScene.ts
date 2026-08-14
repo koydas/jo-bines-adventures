@@ -53,6 +53,7 @@ export class MainMenuScene extends Phaser.Scene {
 
     this.input.once("pointerdown", () => this.start());
     this.input.keyboard?.once("keydown", () => this.start());
+    this.input.gamepad?.once(Phaser.Input.Gamepad.Events.BUTTON_DOWN, () => this.start());
   }
 
   private start() {

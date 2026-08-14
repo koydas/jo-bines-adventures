@@ -55,6 +55,8 @@ export class TownScene extends WorldScene {
       VILLE_ROOM.sorcier.y,
       () => (GameState.portalOpening = true),
       () => GameState.portalOpened,
+      () => GameState.sorcererPendingReply,
+      (reply) => (GameState.sorcererPendingReply = reply),
     );
     this.npcs = [merchant, sorcerer];
 

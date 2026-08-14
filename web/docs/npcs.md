@@ -36,21 +36,31 @@ choices or multi-step state.
      stolen).
   2. Choice page: accept ("Je vais lui pêter la gueule !") or refuse
      ("J'ai bien trop peur de ce mec !").
-  3. On accept: shows a confirmation line the next time you talk to him,
-     and calls back into the scene to set `GameState.portalOpening =
-     true` — see [ADR 0004](./adr/0004-cross-scene-state-via-gamestate-singleton.md).
-     Once the portal is open, `talk()` returns `null` forever (matches
-     the original's `if portal_is_open() { exit; }`).
-  4. On refuse: shows the insult line (`QUEST_TEXT.insult`) the next time
-     you talk to him, then the choice is offered again (you can change
-     your mind).
+  3. On accept: queues a confirmation line, shown the next time you talk
+     to him, and calls back into the scene to set `GameState.portalOpening
+     = true` — see [ADR 0004](./adr/0004-cross-scene-state-via-gamestate-singleton.md).
+     Once that queued reply has been shown *and* the portal is open,
+     `talk()` returns `null` forever (matches the original's `if
+     portal_is_open() { exit; }`) — the queued reply always gets shown
+     first, even if the ~500ms portal-opening animation finishes before
+     the player talks to him again.
+  4. On refuse: queues the insult line (`QUEST_TEXT.insult`), shown the
+     next time you talk to him, then the choice is offered again (you can
+     change your mind).
 - **Quest icon**: shown above his head as long as the quest hasn't been
   accepted and the portal isn't open (`Sorcerer.update()`).
-- **Constructor takes two callbacks** rather than reaching into scene/game
-  state directly: `openPortal: () => void` and
-  `isPortalOpen: () => boolean`. This keeps the entity testable/reusable
-  without hardcoding a dependency on `GameState`; `TownScene` is what
-  wires them to the real `GameState.portalOpening`/`portalOpened` flags.
+- **Constructor takes four callbacks** rather than reaching into
+  scene/game state directly: `openPortal: () => void`,
+  `isPortalOpen: () => boolean`, and a `getPendingReply`/`setPendingReply`
+  pair for the queued confirmation/insult line above. This keeps the
+  entity testable/reusable without hardcoding a dependency on
+  `GameState`; `TownScene` is what wires them to the real
+  `GameState.portalOpening`/`portalOpened`/`sorcererPendingReply` fields.
+  The pending reply specifically has to round-trip through `GameState`
+  rather than staying a field on the entity: `TownScene` builds a fresh
+  `Sorcerer` every time the player returns from the Graveyard, so a
+  queued reply the player hasn't heard yet would otherwise be lost the
+  moment they walk through the portal without talking to him again first.
 
 ## Guard (`Le Garde`)
 

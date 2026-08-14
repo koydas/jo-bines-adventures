@@ -18,6 +18,16 @@ class GameStateStore {
   /** Set right before a scene transition through the portal (enter_portal.gml). */
   enteredViaPortal = false;
 
+  /**
+   * The Sorcerer's follow-up reply the player hasn't heard yet (see
+   * Sorcerer.ts). Lives here rather than on the Sorcerer entity itself:
+   * TownScene builds a fresh Sorcerer instance every time the player
+   * returns from the Graveyard, so a field on the entity is lost the
+   * moment the player walks through the portal without talking to it
+   * again first — this survives that round trip.
+   */
+  sorcererPendingReply: "accept" | "insult" | null = null;
+
   reset() {
     this.hp = PLAYER_STATS.maxHp;
     this.maxHp = PLAYER_STATS.maxHp;
@@ -27,6 +37,7 @@ class GameStateStore {
     this.portalOpened = false;
     this.portalOpening = false;
     this.enteredViaPortal = false;
+    this.sorcererPendingReply = null;
   }
 }
 

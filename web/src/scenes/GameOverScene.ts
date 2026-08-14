@@ -41,5 +41,6 @@ export class GameOverScene extends Phaser.Scene {
 
     this.input.once("pointerdown", restart);
     this.input.keyboard?.once("keydown", restart);
+    this.input.gamepad?.once(Phaser.Input.Gamepad.Events.BUTTON_DOWN, restart);
   }
 }

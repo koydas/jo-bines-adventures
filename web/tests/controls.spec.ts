@@ -208,6 +208,12 @@ test.describe("walking into interactions", () => {
   });
 
   test("walking into an aggroed skeleton and punching it deals damage", async ({ page }) => {
+    // This test's own 30s holdKeyUntil timeout below leaves no headroom
+    // under the global 30s per-test timeout (playwright.config.ts) —
+    // give it room to actually use that budget instead of being cut off
+    // by the outer timeout at the same instant.
+    test.setTimeout(60_000);
+
     await startGame(page);
     await page.evaluate(() => window.__game.scene.keys.Town.scene.start("Graveyard"));
     await expect.poll(() => page.evaluate(() => window.__game.scene.isActive("Graveyard")), { timeout: 10_000 }).toBe(true);
