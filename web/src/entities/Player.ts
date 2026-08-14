@@ -39,7 +39,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // See PLAYER_GROUND_OFFSET: setOrigin(0.5, 1) anchors the idle canvas's
     // bottom edge at y, not the actual feet, so y must be pushed down by
     // idle's offset for the feet to land on groundY.
-    this.y = this.groundY + PLAYER_GROUND_OFFSET.idle;
+    this.y = this.groundY + PLAYER_GROUND_OFFSET;
     this.play("char-idle");
   }
 
@@ -77,7 +77,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     if (this.action !== "run") {
       this.action = "run";
-      this.y = this.groundY + PLAYER_GROUND_OFFSET.run;
+      this.y = this.groundY + PLAYER_GROUND_OFFSET;
       this.play("char-run", true);
     }
   }
@@ -85,7 +85,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   goIdle() {
     if (this.isDead) return;
     this.getBody().setVelocityX(0);
-    this.y = this.groundY + PLAYER_GROUND_OFFSET.idle;
+    this.y = this.groundY + PLAYER_GROUND_OFFSET;
     this.action = "idle";
     this.play("char-idle", true);
   }
@@ -107,7 +107,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.attackTimer = now;
     this.actionUntil = now + COOLDOWNS.attackDurationMs;
     this.getBody().setVelocityX(0);
-    this.y = this.groundY + PLAYER_GROUND_OFFSET.attack;
+    this.y = this.groundY + PLAYER_GROUND_OFFSET;
     this.play("char-punch", true);
 
     // punch_movement.gml: small forward lunge while attacking.
@@ -145,7 +145,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.action = "hit";
     this.actionUntil = now + COOLDOWNS.hitStunMs;
     this.getBody().setVelocityX(0);
-    this.y = this.groundY + PLAYER_GROUND_OFFSET.hit;
+    this.y = this.groundY + PLAYER_GROUND_OFFSET;
     this.play("char-hit", true);
     this.scene.cameras.main.shake(120, 0.004);
 

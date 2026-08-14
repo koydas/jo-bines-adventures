@@ -3,7 +3,7 @@ import { Skeleton } from "../entities/Skeleton";
 import { SimpleNPC } from "../entities/NPC";
 import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
-import { GRAVEYARD_ROOM, GUARD_LINES, PLAYER_STATS, PORTAL, SKELETON_STATS } from "../constants";
+import { GRASS_TILE_GROUND_OFFSET, GRAVEYARD_ROOM, GUARD_LINES, PLAYER_STATS, PORTAL, SKELETON_STATS } from "../constants";
 import { randomDamage } from "../utils/random";
 
 /** Ports rooms/Graveyard (skeletons, the guard, the portal back to town). */
@@ -27,13 +27,23 @@ export class GraveyardScene extends WorldScene {
     const grassTile = this.textures.get("env-city-grass").getSourceImage() as HTMLImageElement;
     const tileWidth = grassTile.width * 0.55;
     for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += tileWidth) {
-      this.add.image(x, 880, "env-city-grass").setScale(0.55).setOrigin(0.5, 1).setTint(0x8f9bc9).setDepth(-4);
+      this.add
+        .image(x, 880 + GRASS_TILE_GROUND_OFFSET, "env-city-grass")
+        .setScale(0.55)
+        .setOrigin(0.5, 1)
+        .setTint(0x8f9bc9)
+        .setDepth(-4);
     }
 
     const decorSpots = [700, 1600, 2500, 4000, 5200, 6300, 7400, 8500, 9600, 10500, 11400];
     decorSpots.forEach((x, i) => {
-      const key = i % 3 === 0 ? "env-tomb1" : i % 3 === 1 ? "env-city-tree" : "env-dead-flower";
-      this.add.image(x, 880, key).setScale(0.35).setOrigin(0.5, 1).setDepth(-3);
+      if (i % 3 === 1) {
+        // 3x the tomb/flower scale — see TownScene's identical fix.
+        this.add.image(x, 880, "env-city-tree").setScale(1.05).setOrigin(0.5, 1).setDepth(-3);
+      } else {
+        const key = i % 3 === 0 ? "env-tomb1" : "env-dead-flower";
+        this.add.image(x, 880, key).setScale(0.35).setOrigin(0.5, 1).setDepth(-3);
+      }
     });
 
     this.add.image(GRAVEYARD_ROOM.width - 400, 850, "env-crypt-entrance").setScale(0.5).setOrigin(0.5, 1);

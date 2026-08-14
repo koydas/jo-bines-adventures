@@ -51,21 +51,27 @@ export const COOLDOWNS = {
   hitStunMs: 250,
 };
 
-// How many px above its own canvas's bottom edge each character animation's
-// real feet sit — sprites/character_*_sprite.yy custom yorigin, converted as
-// (height - yorigin): idle=427-256, run=299-172, punch=350-225, hit=250-115.
+// How many px above the idle canvas's bottom edge the character's real feet
+// sit (sprites/character_idle_sprite.yy custom yorigin: 427-256=171).
 // Player draws with setOrigin(0.5, 1) (anchors the *canvas* bottom edge, not
-// the feet, at y), so without this the character floats above groundY by
-// that many px in every state. idle's offset (171) is far bigger than the
-// others (125-135), which is why idle specifically looked broken: switching
-// out of idle into run/attack/hit already looked roughly grounded, so only
-// idle stood out as floating.
-export const PLAYER_GROUND_OFFSET = {
-  idle: 171,
-  run: 127,
-  attack: 125,
-  hit: 135,
-};
+// the feet, at y), so without this the character floats above groundY.
+//
+// This used to be a separate value per animation, taken from each
+// animation's own sprite yorigin (run=127, attack=125, hit=135 — smaller
+// than idle's 171, since those source frames are trimmed tighter). That
+// made every idle<->run transition snap the character ~44px up/down —
+// visible as a "hop" each time the player starts or stops moving — and
+// running still looked too high relative to standing still. Using idle's
+// offset everywhere removes the pop and grounds every state the same way.
+export const PLAYER_GROUND_OFFSET = 171;
+
+// city_grass_0.png has ~113px of transparent canvas below the visible grass
+// blades (31% of its 361px height — the tufts are drawn well above the
+// canvas's own bottom edge). Both rooms draw it with setOrigin(0.5, 1),
+// which anchors that bottom edge (not the blade tips) at the tile's y, so
+// without this the ground tile floats noticeably above every other
+// ground-anchored decor piece at the 0.55 scale both rooms use.
+export const GRASS_TILE_GROUND_OFFSET = Math.round(113 * 0.55); // ≈ 62px
 
 export const POTION_PRICE = 5;
 

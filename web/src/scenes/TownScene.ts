@@ -5,7 +5,7 @@ import { Sorcerer } from "../entities/Sorcerer";
 import { Potion } from "../entities/Potion";
 import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
-import { VILLE_ROOM } from "../constants";
+import { GRASS_TILE_GROUND_OFFSET, VILLE_ROOM } from "../constants";
 
 /** Ports rooms/ville (town square, general store, portal to the graveyard). */
 export class TownScene extends WorldScene {
@@ -34,14 +34,18 @@ export class TownScene extends WorldScene {
     const grassTile = this.textures.get("env-city-grass").getSourceImage() as HTMLImageElement;
     const tileWidth = grassTile.width * 0.55;
     for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += tileWidth) {
-      this.add.image(x, 900, "env-city-grass").setScale(0.55).setOrigin(0.5, 1).setDepth(-4);
+      this.add.image(x, 900 + GRASS_TILE_GROUND_OFFSET, "env-city-grass").setScale(0.55).setOrigin(0.5, 1).setDepth(-4);
     }
 
     // Scattered decoration (rocks / trees), thinned out from the original room data.
     const decorSpots = [280, 970, 2080, 2470, 3230, 3700, 4230, 4990, 5620, 6220];
     decorSpots.forEach((x, i) => {
-      const key = i % 2 === 0 ? "env-city-rocks" : "env-city-tree";
-      this.add.image(x, 900, key).setScale(0.3).setOrigin(0.5, 1).setDepth(-3);
+      if (i % 2 === 0) {
+        this.add.image(x, 900, "env-city-rocks").setScale(0.3).setOrigin(0.5, 1).setDepth(-3);
+      } else {
+        // 3x the rocks' scale — at 0.3 the trees read as shrubs next to the character.
+        this.add.image(x, 900, "env-city-tree").setScale(0.9).setOrigin(0.5, 1).setDepth(-3);
+      }
     });
 
     // General store building, sitting on the ground behind its counter/shelves.
