@@ -4,6 +4,7 @@ import { SimpleNPC } from "../entities/NPC";
 import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
 import {
+  GRASS_TILE_DENSITY,
   GRASS_TILE_GROUND_OFFSET,
   GRASS_TILE_SCALE,
   GRAVEYARD_ROOM,
@@ -36,7 +37,8 @@ export class GraveyardScene extends WorldScene {
 
     const grassTile = this.textures.get("env-city-grass").getSourceImage() as HTMLImageElement;
     const tileWidth = grassTile.width * GRASS_TILE_SCALE;
-    for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += tileWidth) {
+    const step = tileWidth * GRASS_TILE_DENSITY;
+    for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += step) {
       this.add
         .image(x, 880 + GRASS_TILE_GROUND_OFFSET, "env-city-grass")
         .setScale(GRASS_TILE_SCALE)
