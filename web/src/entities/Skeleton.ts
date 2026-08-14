@@ -130,6 +130,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     this.hp -= amount;
     this.setTint(0xff8888);
     this.scene.time.delayedCall(100, () => this.clearTint());
+    this.showDamageNumber(amount);
 
     if (this.hp <= 0) {
       this.hp = 0;
@@ -147,5 +148,28 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
         },
       });
     }
+  }
+
+  /** Floating "-N" above the skeleton's head, ports scripts/get_damage_number's number (the original never drew it on-screen). */
+  private showDamageNumber(amount: number) {
+    const text = this.scene.add
+      .text(this.x, this.y - this.displayHeight - 20, `-${amount}`, {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "24px",
+        color: "#ff4444",
+        stroke: "#000000",
+        strokeThickness: 4,
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5)
+      .setDepth(20);
+
+    this.scene.tweens.add({
+      targets: text,
+      y: text.y - 40,
+      alpha: 0,
+      duration: 700,
+      onComplete: () => text.destroy(),
+    });
   }
 }
