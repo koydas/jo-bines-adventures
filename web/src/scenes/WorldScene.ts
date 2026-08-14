@@ -113,13 +113,24 @@ export abstract class WorldScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * Shows the contextual ▲ button, which only ever does one thing —
+   * queues `upPressed`, which `handleUp()` only acts on for an open
+   * portal (see docs/adr/0004). Talking to an NPC or buying a potion goes
+   * through the always-visible ⚔️ action button instead, so this hint
+   * must not light up for those: they'd invite a tap that does nothing.
+   *
+   * This also has to avoid `npc.talk()` for the check — unlike a plain
+   * boolean, `talk()` can have side effects (the Sorcerer clears its
+   * pending follow-up message the moment it's called), so calling it
+   * every frame just to peek at whether it returns non-null would
+   * silently consume that state before the player ever presses anything.
+   */
   private updateContextHint() {
     const tc = getTouchControls();
     if (!tc) return;
-    const nearNpc = this.npcs.some((n) => this.overlapping(n) && n.talk() !== null);
-    const nearPotion = !!this.potion && this.overlapping(this.potion);
     const nearPortal = !!this.portal && GameState.portalOpened && this.overlapping(this.portal);
-    tc.setContextVisible(!this.dialogue.visible && (nearNpc || nearPotion || nearPortal));
+    tc.setContextVisible(!this.dialogue.visible && nearPortal);
   }
 
   protected overlapping(target: Phaser.GameObjects.Sprite): boolean {

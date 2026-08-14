@@ -117,7 +117,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
 
   takeDamage(amount: number, now: number) {
     if (this.isDead) return;
-    if (this.lastHitTime > 0 && now - this.lastHitTime < 250) return;
+    if (this.lastHitTime > 0 && now - this.lastHitTime < SKELETON_STATS.hitInvincibilityMs) return;
     this.lastHitTime = now;
     this.hp -= amount;
     this.setTint(0xff8888);

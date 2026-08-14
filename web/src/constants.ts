@@ -29,6 +29,13 @@ export const SKELETON_STATS = {
   attackCooldownMs: 3000,
   money: 5,
   experience: 1,
+  // How long a skeleton is immune to further damage after being hit, so a
+  // single punch (char-punch: 6 frames @ 16fps = 375ms, see BootScene)
+  // can't roll and connect twice while the player and skeleton stay
+  // overlapped for the whole animation. Must stay comfortably under the
+  // player's own attack cooldown (COOLDOWNS.attackMs, 1000ms) so two
+  // separate punches still both land.
+  hitInvincibilityMs: 500,
 };
 
 // cooldowns.gml

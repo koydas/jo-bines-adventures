@@ -30,6 +30,14 @@ export class InputManager {
   private keyShift!: Phaser.Input.Keyboard.Key;
   private keySpace!: Phaser.Input.Keyboard.Key;
 
+  // Gamepad buttons are level-triggered (pad.A stays true for every read()
+  // while held), unlike the keyboard (JustDown) and touch (queued-flag)
+  // paths. Track the previous frame's state so we can derive the same
+  // "true for exactly one read" edge ourselves.
+  private wasPadAction = false;
+  private wasPadItem = false;
+  private wasPadUp = false;
+
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
@@ -60,18 +68,27 @@ export class InputManager {
     const left = !!this.cursors?.left.isDown || !!this.keyA?.isDown || padLeft || touchState.left;
     const right = !!this.cursors?.right.isDown || !!this.keyD?.isDown || padRight || touchState.right;
 
+    // Rising edge only — see the wasPad* comment above.
+    const padActionPressed = padAction && !this.wasPadAction;
+    const padItemPressed = padItem && !this.wasPadItem;
+    const padUpPressed = padUp && !this.wasPadUp;
+    this.wasPadAction = padAction;
+    this.wasPadItem = padItem;
+    this.wasPadUp = padUp;
+
     const actionPressed =
       (!!this.keyCtrl && Phaser.Input.Keyboard.JustDown(this.keyCtrl)) ||
       (!!this.keySpace && Phaser.Input.Keyboard.JustDown(this.keySpace)) ||
-      padAction ||
+      padActionPressed ||
       this.consume("actionQueued");
 
-    const itemPressed = (!!this.keyShift && Phaser.Input.Keyboard.JustDown(this.keyShift)) || padItem || this.consume("itemQueued");
+    const itemPressed =
+      (!!this.keyShift && Phaser.Input.Keyboard.JustDown(this.keyShift)) || padItemPressed || this.consume("itemQueued");
 
     const upPressed =
       (!!this.cursors?.up && Phaser.Input.Keyboard.JustDown(this.cursors.up)) ||
       (!!this.keyW && Phaser.Input.Keyboard.JustDown(this.keyW)) ||
-      padUp ||
+      padUpPressed ||
       this.consume("upQueued");
 
     return { left, right, actionPressed, itemPressed, upPressed };
