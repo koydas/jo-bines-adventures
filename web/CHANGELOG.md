@@ -20,7 +20,15 @@ picks up from there for the new web port.
   `ghcr.io/koydas/jo-bines-adventures`, and bumps the deployed tag on
   `master` for GitOps tools (ArgoCD) to sync on. Onboarded into
   `koydas/gitops-homelab` as a git-source Application — see that repo's
-  ADR-0024.
+  ADR-0024. Gated on `npm run build` (typecheck + build), not the
+  Playwright suites — see Known Issues below.
+
+### Known issues
+- `smoke-tests.yml` and `e2e-tests.yml` fail on every CI run so far with
+  `Timed out waiting 30000ms from config.webServer`: `vite preview`
+  answers in ~3s when run locally but doesn't come up in time on a
+  GitHub-hosted runner. Not caused by the `k8s`/`docker-publish` addition
+  above (reproduced on commits before it too); not yet root-caused.
 
 ### Changed
 - Improved `README.md` with clearer setup/deploy instructions and links to
