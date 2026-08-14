@@ -5,7 +5,7 @@ import { Sorcerer } from "../entities/Sorcerer";
 import { Potion } from "../entities/Potion";
 import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
-import { GRASS_TILE_GROUND_OFFSET, TOWN_TREE_GROUND_OFFSET, TOWN_TREE_SCALE, VILLE_ROOM } from "../constants";
+import { GRASS_TILE_GROUND_OFFSET, GRASS_TILE_SCALE, TOWN_TREE_GROUND_OFFSET, TOWN_TREE_SCALE, VILLE_ROOM } from "../constants";
 
 /** Ports rooms/ville (town square, general store, portal to the graveyard). */
 export class TownScene extends WorldScene {
@@ -32,9 +32,9 @@ export class TownScene extends WorldScene {
 
     // Ground tiling.
     const grassTile = this.textures.get("env-city-grass").getSourceImage() as HTMLImageElement;
-    const tileWidth = grassTile.width * 0.55;
+    const tileWidth = grassTile.width * GRASS_TILE_SCALE;
     for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += tileWidth) {
-      this.add.image(x, 900 + GRASS_TILE_GROUND_OFFSET, "env-city-grass").setScale(0.55).setOrigin(0.5, 1).setDepth(-4);
+      this.add.image(x, 900 + GRASS_TILE_GROUND_OFFSET, "env-city-grass").setScale(GRASS_TILE_SCALE).setOrigin(0.5, 1).setDepth(-4);
     }
 
     // Scattered decoration (rocks / trees), thinned out from the original room data.

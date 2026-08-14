@@ -73,11 +73,13 @@ export const PLAYER_GROUND_OFFSET = 171;
 // canvas's own bottom edge). Both rooms draw it with setOrigin(0.5, 1),
 // which anchors that bottom edge (not the blade tips) at the tile's y, so
 // without this the ground tile floats noticeably above every other
-// ground-anchored decor piece at the 0.55 scale both rooms use. The base
-// 62px closes that measured gap exactly; the rest is further by-eye nudges
-// requested on top of that (each round +X% of the offset so far):
-// +15% -> 92px, then +30% -> 120px.
-export const GRASS_TILE_GROUND_OFFSET = Math.round((Math.round(113 * 0.55) + Math.round(0.15 * 361 * 0.55)) * 1.3); // ≈ 120px
+// ground-anchored decor piece. GRASS_TILE_GROUND_OFFSET below was tuned by
+// eye at GRASS_TILE_SCALE 0.55 (62px base gap-close, +15%, +30% — landed on
+// "good" at 120px there); doubling the scale to 1.1 doubles that same
+// padding in pixels, so the offset needs to double too (240px) to keep the
+// same relative grounding.
+export const GRASS_TILE_SCALE = 1.1;
+export const GRASS_TILE_GROUND_OFFSET = 240;
 
 // Tree scale/position, tuned by eye across several feedback rounds
 // (bigger, lower) rather than derived from a single measurement like the

@@ -5,6 +5,7 @@ import { Portal } from "../entities/Portal";
 import { GameState } from "../state/GameState";
 import {
   GRASS_TILE_GROUND_OFFSET,
+  GRASS_TILE_SCALE,
   GRAVEYARD_ROOM,
   GRAVEYARD_TREE_GROUND_OFFSET,
   GRAVEYARD_TREE_SCALE,
@@ -34,11 +35,11 @@ export class GraveyardScene extends WorldScene {
     this.add.rectangle(this.roomWidth / 2, 980, this.roomWidth + 400, 220, 0x2c2036).setDepth(-5);
 
     const grassTile = this.textures.get("env-city-grass").getSourceImage() as HTMLImageElement;
-    const tileWidth = grassTile.width * 0.55;
+    const tileWidth = grassTile.width * GRASS_TILE_SCALE;
     for (let x = -tileWidth; x < this.roomWidth + tileWidth; x += tileWidth) {
       this.add
         .image(x, 880 + GRASS_TILE_GROUND_OFFSET, "env-city-grass")
-        .setScale(0.55)
+        .setScale(GRASS_TILE_SCALE)
         .setOrigin(0.5, 1)
         .setTint(0x8f9bc9)
         .setDepth(-4);
