@@ -79,16 +79,18 @@ export const PLAYER_GROUND_OFFSET = 171;
 // +15% -> 92px, then +30% -> 120px.
 export const GRASS_TILE_GROUND_OFFSET = Math.round((Math.round(113 * 0.55) + Math.round(0.15 * 361 * 0.55)) * 1.3); // ≈ 120px
 
-// Tree scale/position, tuned by eye across a few feedback rounds (bigger,
-// lower) rather than derived from a single measurement like the offsets
-// above. city_tree_0.png has 172px of transparent canvas below the visible
-// tree (14% of its 1236px height); the base offset below closes 40% of
-// that gap at each room's tree scale, then a further +50% (of the offset
-// so far) was requested on top of that.
+// Tree scale/position, tuned by eye across several feedback rounds
+// (bigger, lower) rather than derived from a single measurement like the
+// offsets above. city_tree_0.png has 172px of transparent canvas below the
+// visible tree (14% of its 1236px height); the offset closed 40% of that
+// gap at each room's tree scale, then +50% on top of that, then another
+// nudge down "by the same distance again" as that last +50% step
+// (Town +37px, Graveyard +44px) — so the formula below stops tracking the
+// original percentages and just adds that last step's delta once more.
 export const TOWN_TREE_SCALE = 1.08;
-export const TOWN_TREE_GROUND_OFFSET = Math.round(Math.round(0.4 * 172 * TOWN_TREE_SCALE) * 1.5); // ≈ 111px
+export const TOWN_TREE_GROUND_OFFSET = 148;
 export const GRAVEYARD_TREE_SCALE = 1.26;
-export const GRAVEYARD_TREE_GROUND_OFFSET = Math.round(Math.round(0.4 * 172 * GRAVEYARD_TREE_SCALE) * 1.5); // ≈ 131px
+export const GRAVEYARD_TREE_GROUND_OFFSET = 175;
 
 // Same class of bug as PLAYER_GROUND_OFFSET, just never corrected at all:
 // sprites/skeleton_*_sprite.yy's custom yorigin puts the real feet ~47% of
