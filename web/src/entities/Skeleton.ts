@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { SKELETON_GROUND_OFFSET, SKELETON_STATS } from "../constants";
+import { sfx } from "../systems/Sfx";
 import type { Player } from "./Player";
 
 type SkeletonAction = "idle" | "walk" | "attack";
@@ -116,6 +117,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     this.attackTimer = now;
     this.action = "attack";
     this.play("skel-attack", true);
+    sfx.skeletonAttack();
 
     const attackSpeed = SKELETON_STATS.walkSpeed * 1.25;
     this.walkTowardOnce(this.player.x, attackSpeed);
@@ -144,6 +146,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
     this.setTint(0xff8888);
     this.scene.time.delayedCall(100, () => this.clearTint());
     this.showDamageNumber(amount);
+    sfx.hit();
 
     if (this.hp <= 0) {
       this.hp = 0;
@@ -151,6 +154,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite {
       this.player.experience += SKELETON_STATS.experience;
       this.getBody().setVelocity(0, 0);
       this.getBody().enable = false;
+      sfx.skeletonDeath();
       this.scene.tweens.add({
         targets: this,
         alpha: 0,

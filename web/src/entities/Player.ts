@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { COOLDOWNS, PLAYER_GROUND_OFFSET, PLAYER_STATS } from "../constants";
+import { sfx } from "../systems/Sfx";
 
 export type PlayerAction = "idle" | "run" | "attack" | "hit";
 
@@ -109,6 +110,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.getBody().setVelocityX(0);
     this.y = this.groundY + PLAYER_GROUND_OFFSET;
     this.play("char-punch", true);
+    sfx.punch();
 
     // punch_movement.gml: small forward lunge while attacking.
     const lunge = 60 * this.facing;
@@ -148,6 +150,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.y = this.groundY + PLAYER_GROUND_OFFSET;
     this.play("char-hit", true);
     this.scene.cameras.main.shake(120, 0.004);
+    sfx.hit();
 
     if (this.hp <= 0) {
       this.hp = 0;
