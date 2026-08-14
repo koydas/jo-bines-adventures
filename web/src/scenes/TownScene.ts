@@ -52,7 +52,7 @@ export class TownScene extends WorldScene {
     // rather than the sparse one-off rocks in decorSpots below. Anchored at
     // GAME_HEIGHT so it sits right at the very bottom of the screen.
     const rockTile = this.textures.get("env-city-rocks").getSourceImage() as HTMLImageElement;
-    const rockScale = 0.3;
+    const rockScale = 0.6; // 2x, per feedback (rockStep below scales with it, so spacing stays proportional)
     const rockStep = rockTile.width * rockScale * 0.5;
     for (let x = VILLE_ROOM.sorcier.x; x <= VILLE_ROOM.generalStoreDoor.x; x += rockStep) {
       this.add.image(x, GAME_HEIGHT, "env-city-rocks").setScale(rockScale).setOrigin(0.5, 1).setDepth(-3);
